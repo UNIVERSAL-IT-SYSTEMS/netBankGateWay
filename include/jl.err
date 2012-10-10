@@ -1,0 +1,117 @@
+
+typdef struct MID_DEF_9002_O1
+{
+char  KDPD[6];      /*交费月份*/
+char  AMT1[13];     /*当月金额(实收金额)*/
+char  AMT2[13];     /*基本月租*/
+char  AMT3[13];     /*市话费*/
+char  AMT4[13];     /*国内长途费*/
+char  AMT5[13];     /*国际长途费*/
+char  AMT6[13];     /*漫游费*/
+char  AMT7[13];     /*特服费(功能使用费)*/
+char  AMT8[13];     /*信息费*/
+char  AMT9[13];     /*电话业务费*/
+char  AMT10[13];    /*分期付款*/
+char  AMT11[13];    /*注册费*/
+char  AMT12[13];    /*其它费用*/
+char  AMT13[13];    /*租号附加费*/
+char  AMT14[13];    /*保险费*/
+char  AMT15[13];    /*补收费*/
+char  AMT16[13];    /*计划补收费*/
+char  AMT17[13];    /*减免费*/
+char  AMT18[13];    /*滞纳金*/
+char  AMT19[13];    /*本次应付预交款*/
+char  AMT20[13];    /*上期结余*/
+char  AMT21[13];    /*本期结余*/
+char  AMT22[13];    /*打印合计金额*/
+char  CF02[1];    /*BP机费标志:暂时放JELX*/
+}MID_DEF_9002_O1;
+
+typedef struct MID_DEF_9002_O
+{
+char  MGID[7];      /*信息码*/
+char  TRDT[8];      /*交易日期*/
+char  TRTM[6];      /*交易时间*/
+char  TLCS[8];      /*柜员流水号*/
+char  USNM[60];     /*用户名*/
+char  TTMT[2];      /*打印份数*/
+/*MID_DEF_9002_O1 MV[6];*/ /*明细结构*/
+}MID_DEF_9002_O;
+
+/**水费**/
+/*8641 查询*/
+typedef struct MID_DEF_8641_I
+{
+char TRCD[4];            /*交易码*/
+char RGCD[3];            /*地区号*/
+char OGCD[3];            /*网点号*/
+char TRTL[4];            /*交易柜员*/
+char AUTL[4];            /*授权柜员*/
+char TTYN[8];            /*终端号,发向前置机时填TRDT*/
+char CTSQ[8];		 /*缴费卡号*/
+}MID_DEF_8641_I;
+
+typedef struct MID_DEF_8641_O2
+{
+char KDPD[6];		 /*缴费月份*/
+char AMNT[13];		 /*缴费金额*/
+char AMTT[13];		 /*滞纳金*/
+}MID_DEF_8641_O2;
+
+typedef struct MID_DEF_8641_O
+{
+char MGID[7];            /*返回码 AAAAAAA-表示成功*/
+char TRDT[8];            /*交易日期*/
+char TRTM[6];            /*交易时间*/
+char TLCS[8];            /*流水号*/
+char DEMT[2];		 /*总欠费数*/
+char USNM[60];		 /*客户姓名*/
+char AMNT[13];		 /*合计金额*/
+/*MID_DEF_8641_O2	WA[12]; */ /*缴费明细*/
+}MID_DEF_8641_O;
+
+/**8642 缴费**/
+typedef struct MID_DEF_8642_I
+{
+char TRCD[4];            /*交易码*/
+char RGCD[3];            /*地区号*/
+char OGCD[3];            /*网点号*/
+char TRTL[4];            /*交易柜员*/
+char AUTL[4];            /*授权柜员*/
+char TTYN[8];            /*终端号,发向前置机时填TRDT*/
+char CTSQ[8];		 /*缴费号*/
+char KDPD[6];		 /*缴费月份*/
+char SFFP[10];		 /*水费发票号*/
+char ZZFP[12];		 /*发票版本号*/
+char AGMD[1];		 /*缴费方式0-现金,1-卡,-2支票*/
+char AMNT[13];		 /*缴费金额*/
+char CDNO[17];		 /*卡号*/
+char DESP[8];		 /*密码*/
+}MID_DEF_8642_I;
+
+typedef struct MID_DEF_8642_O2
+{
+   char LEBB[12];           /*类别*/
+   char AGNN[8];            /*水量*/
+   char PICC[5];            /*水价*/
+   char AMNT[13];           /*金额*/
+}MID_DEF_8642_O2;
+
+typedef struct MID_DEF_8642_O
+{
+char MGID[7];            /*返回码 AAAAAAA-表示成功*/
+char TRDT[8];            /*交易日期*/
+char TRTM[6];            /*交易时间*/
+char TLCS[8];            /*流水号*/
+char USNM[60];           /*客户姓名*/
+char USQD[8];            /*用水起度*/
+char USZD[8];            /*用水止度*/
+char SYSL[8];            /*实用水量*/
+char CBDT[8];            /*抄表日期*/
+char QHAO[4];            /*区号*/
+char FHAO[4];            /*户号*/
+char ADDR[40];           /*地址*/
+char AMNT[13];           /*总金额*/
+char AMTT[13];           /*小写金额*/
+char BEZU[40];           /*备注*/
+}MID_DEF_8642_O;

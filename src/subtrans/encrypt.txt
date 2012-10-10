@@ -1,0 +1,30 @@
+		if((pComplibhandle = dlopen("libencrytrps.so", RTLD_LAZY)) == NULL)
+		 {
+ 		flog(INFO_LEVEL,"%s,%s,%s,%s","执行动态失败", dlerror(),
+		 "libencrytrps.so","encry_trps");
+		 return -1;
+		 }
+
+               if((pCompfunchandle=(int (*)())dlsym(pComplibhandle, "encry_trps"))== NULL)
+                {
+                        dlclose(pComplibhandle);
+                        flog(INFO_LEVEL,"%s,%s,%s,%s","执行动态失败",dlerror(),
+                                "libencrytrps.so","encry_trps");
+                        return -1;
+                }
+
+
+
+if((ret=(*pCompfunchandle)(current_tcode,current_acode,current_dept,current_teller,current_cardno,passwd,cipher)) != 0 )
+                {
+                        dlclose(pComplibhandle);
+                        flog(INFO_LEVEL,"%s,%s,%s,%s,%d","执行动态失败",dlerror(),
+                                "libencrytrps.so","encry_trps",ret);
+                        return -1;
+                }
+
+                flog(INFO_LEVEL,"%s,%s,%d","执行动态成功", "libencrytrps.so",ret);
+
+                if ( dlclose(pComplibhandle))
+                        flog(INFO_LEVEL,"%s,%s,%s,%s","执行动态失败",dlerror(),"
+libencrytrps.so","encry_trps");
