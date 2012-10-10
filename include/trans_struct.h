@@ -1428,12 +1428,50 @@ typedef struct  ICS_DEF_461501_N{
         char IgatBnm[80];	/*收入行名*/	  
 }ICS_DEF_461501_N;
 
-typedef struct ICS_DEF_460245_E{
+typedef struct ICS_DEF_461501_E{
         char sjcd[4];    /*数据长度*/
 		char sjgs[5];    /*数据格式*/
 		char RspCod[6];
 		char InPos[4];
-		cjar RspMsg[56];
-}ICS_DEF_460245_E;  
+		char RspMsg[56];
+}ICS_DEF_461501_E;  
 
+
+/*
+ * 460501
+ * 移动划扣充值业务签约交易
+ */
+
+typedef struct ICS_DEF_460501_I_MOB{
+        char SigTyp[1];   /*签约类型*/
+        char VchNO[8];  /*凭证号*/
+        char ActTyp[1];  /*账号类型*/
+        char ActNo[28];   /*银行账号*/
+        char ActNam[32];   /*银行账号名称*/
+        char IdTyp[02];  /*证件类型*/
+        char IdNo[20];     /*证件号码*/
+        char CusNam[32];   /*客户姓名*/
+        char MstTel[20];    /*主手机号码*/
+        char SigTel[20];   /*签约手机号码*/
+        char SigFlg[1];  /*签约标记（主0/副1）*/
+        char PINDat[20];  /*银行交易密码*/
+}ICS_DEF_460501_I_MOB;
+
+typedef struct  ICS_DEF_460501_N_MOB{
+        char TmpDat[4];   /*package length*/
+        char ApCode[2];   /*"SC"*/
+        char OFmtCd[3];  /*"D04"*/
+        char MstTel[20];  /*主手机号码*/
+        char SigTel[20];   /*签约手机号码*/
+        char LogNo[30];   /*移动返回流水号*/
+}ICS_DEF_460501_N_MOB;
+
+typedef struct ICS_DEF_460501_E_MOB{
+        char TmpDat[4];
+        char ApCode[2];  /*"SC"*/
+        char OFmtCd[3];  /*"D04"*/
+        char RspCod[6];  /* */
+        char InPos[4];   /*0001*/
+        char RspMsg[56]; /* */
+}ICS_DEF_460501_E_MOB;  
 

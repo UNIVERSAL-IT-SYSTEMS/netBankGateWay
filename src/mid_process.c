@@ -294,6 +294,17 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
                 break;
           /*add 20111010 电费缴纳 end */      
 
+          /*add 20121010 移动划扣 begin*/ 
+            case 32:    /* 移动划扣*/
+               switch(i_biz_step_id)
+               {
+                   case 1: /*签约*/
+                       ret=ics_proc_460501_mob(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460501--------ret=[%d]",ret);
+                       break;
+               }
+               break;
+          /*add 20121010 移动划扣 end */      
 	default:
 		break;
 	}

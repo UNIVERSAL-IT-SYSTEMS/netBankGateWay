@@ -1,0 +1,13 @@
+1.修改trans_struct.h
+  trans_struct.h用结构体定义发送返回包的字段和长度
+
+2.修改netbank.cfg
+  增加通讯端口ICS_PORT_MOB
+
+3.增加subtrans460501_mob.c并进行修改
+
+4.修改subtrans/makefile
+  增加.c
+
+5.修改mid_process.c
+  增加相关交易分类

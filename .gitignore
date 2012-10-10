@@ -1,2 +1,16 @@
 *.o
+*.test
+*.tar
 nohup.out
+/config/host.cfg.*
+/include/trans_struct.h.*
+/src/20110819sc
+/src/subtrbak
+client.c.*
+mid_process.c.*
+makefile.*
+*.bak
+*.2010*
+*.2011*
+*.2012*
+src/subtrans/subtrans482138.c.091106
