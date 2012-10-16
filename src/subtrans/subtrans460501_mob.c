@@ -96,7 +96,7 @@ int ics_proc_460501_mob(char *send_buff,char *recv_buff)
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sTranDate,'\0',sizeof(sTranDate));
 
-flog( STEP_LEVEL,"--460501 接收[%s]-------------------------------",send_buff);
+  flog( STEP_LEVEL,"--460501 接收[%s]-------------------------------",send_buff);
 
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
@@ -204,7 +204,6 @@ flog( STEP_LEVEL,"--460501 接收[%s]-------------------------------",send_buff);
   trim(tmpvalue);
   strcpy(pICS_460501_I->PINDat,tmpvalue);
 
-
   /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
   len=sizeof(ICS_DEF_TIA);
   for(i=0;i<len;i++)
@@ -261,13 +260,15 @@ flog( STEP_LEVEL,"--460501 接收[%s]-------------------------------",send_buff);
    /* 与ICS通讯 */
    memset(ics_port,'\0',sizeof(ics_port));
 
-   ret = get_config_value(CONFIG_FILE_NAME, "ICS_PORT_MOB", ics_port);
+   ret = get_config_value(CONFIG_FILE_NAME, "ICS_PORT_MOBIL", ics_port);
 
    if (ret != RETURN_OK)
    {
        return -2;
    }
-
+   /*-- 打印发送报文与端口 --*/
+   flog( STEP_LEVEL,"--发送ics报文--[%s][%s]",ics_send_buff,ics_port);
+   /*-- 发送交易到ICS，并接受返回 --*/
    ret=clientics( ics_send_buff,ics_recv_buff, atoi(ics_port) );
 
    if(ret != RETURN_OK)
