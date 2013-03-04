@@ -128,8 +128,8 @@ char  RspMsg[56];                  /*出错原因*/
  */
 
 typedef struct ICS_DEF_928460_I{
-    char TxnCnl[1];   /* 交易渠道:1-电话银行;2-网银;3-ATM/CDM/CRS;
-                    4-POS;5-多媒体;6-手机 */
+    char TxnCnl[1];   /* 交易渠道:1电话银行;2网银;3ATM/CDM/CRS;
+                    4POS;5多媒体;6手机 */
     char ActNo[21];   /* 帐号 */
     char CusId[13];   /* 客户号 */
     char PINTyp[1];   /* 密码类型 */
@@ -345,7 +345,7 @@ char  RspMsg[56];                  /*出错原因*/
 }ICS_DEF_482112_E;
 
 
-/** add by viatt lichen 2008-10-10 begin **/
+/** add by viatt lichen 20081010 begin **/
 /*
  * 482115
  * 车船税查询
@@ -660,11 +660,11 @@ typedef struct ICS_DEF_482135_I{
   char  Begin_Date[8];            /*使用日期*/
   char  Message_Type[2];          /*短信类型*/
   char  Amount1[14];              /*总金额*/
-  char  ActTyp[1];                /*帐号类型--NULLABLE*/
+  char  ActTyp[1];                /*帐号类型NULLABLE*/
   char  ActNo[21];                /*代扣帐号*/
   char  PinBlk[20];               /*交易密码*/
-  char  TxCck2[40];               /*第二磁道--NULLABLE*/
-  char  TxCck3[110];              /*第三磁道--NULLABLE*/
+  char  TxCck2[40];               /*第二磁道NULLABLE*/
+  char  TxCck3[110];              /*第三磁道NULLABLE*/
   char  Scence_Code[12];          /*景区代码*/
   char  Scence_Name[60];          /*景区名称*/
   char  Product_Name[50];         /*门票名称*/
@@ -713,9 +713,9 @@ typedef struct ICS_DEF_482147_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482147_E;
-/** add by viatt lichen 2008-10-10 end **/
+/** add by viatt lichen 20081010 end **/
 
-/** add by viatt lichen 2009-01-07 begin **/
+/** add by viatt lichen 20090107 begin **/
 typedef struct ICS_DEF_481152_I{
   char  TxnDat[8];      /*日期*/
   char  AbuTyp[4];      /*卡类*/
@@ -835,9 +835,9 @@ typedef struct ICS_DEF_482140_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482140_E;
-/** add by viatt lichen 2009-01-07 end **/
+/** add by viatt lichen 20090107 end **/
 
-/*add by viatt linzw 2009-02-18 begin*/
+/*add by viatt linzw 20090218 begin*/
 typedef struct ICS_DEF_482149_I{
   char  bank_acc[32];           /*代扣帐号*/
 }ICS_DEF_482149_I;
@@ -845,10 +845,10 @@ typedef struct ICS_DEF_482149_I{
 typedef struct ICS_DEF_482149_N{
   char  TmpDat[4];       /*长度*/
   char  ApFmt[5];        /*前端空格式码 48D01*/ 
-  char  sign_flag[1];     /*签约类型 0-网银 1-自助通 */
+  char  sign_flag[1];     /*签约类型 0网银 1自助通 */
   char  inst_no[9];       /*签约机构 */
-  char  live_flag[1];     /*激活标志 0-激活 1-未激活 */
-  char  tran_flag[1];     /*交易标志 0-允许交易 1-不允许交易 */
+  char  live_flag[1];     /*激活标志 0激活 1未激活 */
+  char  tran_flag[1];     /*交易标志 0允许交易 1不允许交易 */
   char  acc_type[1];      /*扣款方式 1:预扣款用户 0:实时扣款用户 */
   char  yct_pwd[10];      /*羊城通密码 */
   char  bank_acc[30];     /*账号 */
@@ -873,7 +873,7 @@ typedef struct ICS_DEF_482149_N{
   char  frequence[4];     /*频度 */
   char  reg_date[4];      /*签约日期 */
   char  cncl_date[4];     /*解约日期 */
-  char  cncl_flag[4];     /* 签解约标志 0 - 签约 1 - 解约 */
+  char  cncl_flag[4];     /* 签解约标志 0  签约 1  解约 */
    /*char  address[50];     地址 */
   char  reserve1[30];     /*  预留字段1 */
   char  reserve2[30];     /*  预留字段2 */
@@ -892,10 +892,10 @@ typedef struct ICS_DEF_482149_E{
 }ICS_DEF_482149_E;
 /*签约*/
 typedef struct ICS_DEF_482138_I{
-    char  sign_flag[1];          /*签约类型 0-网银 1-自助通 */
+    char  sign_flag[1];          /*签约类型 0网银 1自助通 */
     char  inst_no[9];            /*签约机构 */
-    char  live_flag[1];            /*激活标志 0-激活 1-未激活 */
-    char  tran_flag[1];            /*交易标志 0-允许交易 1-不允许交易 */
+    char  live_flag[1];            /*激活标志 0激活 1未激活 */
+    char  tran_flag[1];            /*交易标志 0允许交易 1不允许交易 */
     char  acc_type[1];            /*扣款方式 1:预扣款用户 0:实时扣款用户 */
     char  yct_pwd[10];            /*羊城通密码 */
     char  bank_acc[19];           /*账号 */
@@ -920,7 +920,7 @@ typedef struct ICS_DEF_482138_I{
     char  frequence[4];           /*频度 */
     char  reg_date[4];           /*签约日期 */
     char  cncl_date[4];           /*解约日期 */
-    char  cncl_flag[4];           /* 签解约标志 0 - 签约 1 - 解约 */
+    char  cncl_flag[4];           /* 签解约标志 0  签约 1  解约 */
      /*char  address[50];          地址 */
     char  reserve1[30];           /*  预留字段1 */
     char  reserve2[30];           /*  预留字段2 */
@@ -945,7 +945,7 @@ typedef struct ICS_DEF_482138_E{
 }ICS_DEF_482138_E;
 /* 解约*/
 typedef struct ICS_DEF_482139_I{
-    char  sign_flag[1];     /*签约类型 0-网银 1-自助通 */
+    char  sign_flag[1];     /*签约类型 0网银 1自助通 */
     char  inst_no[9];            /*签约机构 */
     char  bank_acc[19];           /*账号 */
     char  card1[10];           /* 解约羊城通卡号1 */
@@ -1006,7 +1006,7 @@ typedef struct ICS_DEF_482159_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482159_E;
-/*add by viatt linzw 2009-02-18 end*/
+/*add by viatt linzw 20090218 end*/
 
 /*add by xuan for test */
 typedef struct ICS_DEF_482999_I{
@@ -1353,8 +1353,8 @@ typedef struct ICS_DEF_460245_I{
 
 typedef struct  ICS_DEF_460245_N{
     char TmpDat[4];   /*package length*/
-	  char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+	  char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char TLogNo[12];  /*供电公司系统参考号*/
     char TckNo[12];   /*会计业务流水号*/
     char TActDt[4];   /*供电公司清算日期*/
@@ -1362,8 +1362,8 @@ typedef struct  ICS_DEF_460245_N{
 
 typedef struct ICS_DEF_460245_E{
     char TmpDat[4];
-	  char ApCode[2];  /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+	  char ApCode[2];  /*SC*/
+    char OFmtCd[3];  /*D04*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* */
@@ -1372,67 +1372,6 @@ typedef struct ICS_DEF_460245_E{
 }ICS_DEF_460245_E;  
 
 
-/*
- * 461501
- * 普通非税应收信息查询
- */
-typedef struct ICS_DEF_461501_I{
-    char AdnCod[20];   /*通知书编号*/
-    char PBilTyp[10];  /*打印票据种类*/
-    char PBilNo[20];   /*打印票据编号*/
-    char HndFlg[1];    /*通知书填写方式*/
-    char UpdAdnFg[1];  /*查询刷新标志*/
-    char RipFlg[1];    /*斯定额票标志*/
-    char DitCod[6];    /*行政区划*/
-}ICS_DEF_461501_I;
-
-typedef struct  ICS_DEF_461501_N{
-    char AdnCod[20];   /*通知书编号*/
-    char PBilTyp[10];  /*打印票据种类*/
-    char PBilNo[20];   /*打印票据编号*/
-		char LevFlg[3];    /*征收方式*/
-		char WriDat[8];    /*填制日期*/
-		char DitCod[6];    /*行政区划*/
-		char ColUntCd[42]; /*执收单位*/
-		char ColUntNm[100]; /*执收单位名称*/
-		char CsgUntCd[42];  /*委托单位编码*/
-		char CsgUntNm[100]; /*委托单位名称*/
-		char XpayNam[80];   /*书面付款人名*/
-		char XpayAct[40];   /*书面付款账号*/
-		char XpayObk[80];   /*书面付开户行*/
-		char XgatNam[80];   /*书面收款人名*/
-		char XgatAct[40];   /*书面收款账号*/
-		char XgatObk[80];   /*书面收开户行*/
-		char AdnSmr[240];   /*备注*/
-		char StpDat[8];     /*缴款截止日期*/
-		char AdnMac[4];     /*校验码*/
-		char AdnAmt[15];    /*应收总金额*/
-		char FinAccIn[21];  /*入账账号*/
-		char PntAmt[15];    /*非税收入金额*/
-		char AgtAmt[15];    /*代理代收金额*/
-		char AgtFlg[1];     /*代收标示*/
-		char RgnFlg[1];     /*区域标志*/
-		char AdnTyp[10];    /*通知书种类*/
-		char RecNum[2];     /*循环次数*/
-		char ItmSeq[1];     /*项目顺序*/
-		char ItmCod[42];    /*收入项目编码*/
-		char ItmNam[100];   /*收入项目名称*/
-		char ItmNum[18];    /*数量*/
-		char ItmAmt[15];    /*金额*/
-		char LatTyp[1];     /*滞纳金类型*/
-		char ItmTyp[1];     /*项目类型*/
-    char IgatAct[40];   /*收入账号*/
-    char IgatNam[80];   /*收入户名*/
-    char IgatBnm[80];	/*收入行名*/	  
-}ICS_DEF_461501_N;
-
-typedef struct ICS_DEF_461501_E{
-    char sjcd[4];    /*数据长度*/
-		char sjgs[5];    /*数据格式*/
-		char RspCod[6];
-		char InPos[4];
-		char RspMsg[56];
-}ICS_DEF_461501_E;  
 
 
 /*
@@ -1456,8 +1395,8 @@ typedef struct ICS_DEF_460501_I_MOB{
 
 typedef struct  ICS_DEF_460501_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char MstTel[20];  /*主手机号码*/
     char SigTel[20];   /*签约手机号码*/
     char LogNo[30];   /*移动返回流水号*/
@@ -1465,8 +1404,8 @@ typedef struct  ICS_DEF_460501_N_MOB{
 
 typedef struct ICS_DEF_460501_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];  /*SC*/
+    char OFmtCd[3];  /*D04*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* */
@@ -1491,8 +1430,8 @@ typedef struct ICS_DEF_460506_I_MOB{
 
 typedef struct  ICS_DEF_460506_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char  ActTyp  [1]   ; /* 账号类型 */
     char  ActNo   [28]  ; /*银行账号*/
     char  IdTyp   [2]   ; /* 证件类型 */
@@ -1503,8 +1442,8 @@ typedef struct  ICS_DEF_460506_N_MOB{
 
 typedef struct ICS_DEF_460506_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];  /*SC*/
+    char OFmtCd[3];  /*D04*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* 错误信息 */
@@ -1520,8 +1459,8 @@ typedef struct ICS_DEF_460511_I_MOB{
 
 typedef struct  ICS_DEF_460511_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char  IdTyp  [2]  ; /*证件种类*/
     char  IdNo   [20] ; /*证件号码*/
     char  ActNam [32] ; /*户名*/
@@ -1530,8 +1469,8 @@ typedef struct  ICS_DEF_460511_N_MOB{
 
 typedef struct ICS_DEF_460511_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];  /*SC*/
+    char OFmtCd[3];  /*D04*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* 错误信息 */
@@ -1542,8 +1481,8 @@ typedef struct ICS_DEF_460511_E_MOB{
  */
 typedef struct ICS_DEF_DEFAULT_E{
     char  TmpDat[4];
-    char  ApCode[2];  /*"SC"*/
-    char  OFmtCd[3];  /*"D04"*/
+    char  ApCode[2];  /*SC*/
+    char  OFmtCd[3];  /*D04*/
     char  RspCod[6];  /* */
     char  InPos[4];   /*0001*/
     char  RspMsg[56]; /* 错误信息 */
@@ -1560,8 +1499,8 @@ typedef struct ICS_DEF_460601_I_MOB{
 
 typedef struct  ICS_DEF_460601_N_MOB{
     char  TmpDat[4];   /*package length*/
-    char  ApCode[2];   /*"SC"*/
-    char  OFmtCd[3];  /*"D04"*/
+    char  ApCode[2];   /*SC*/
+    char  OFmtCd[3];  /*D04*/
     char  AreCod[4]  ; /*地区号*/
 }ICS_DEF_460601_N_MOB;
 
@@ -1576,9 +1515,9 @@ typedef struct ICS_DEF_460602_I_MOB{
 }ICS_DEF_460602_I_MOB;
 
 typedef struct  ICS_DEF_460602_N_MOB{
-    char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char  TmpDat[4];   /*package length*/
+    char  ApCode[2];   /*SC*/
+    char  OFmtCd[3];  /*D04*/
     char  ActDat  [8];  /*会计日期*/
     char  TckNo  [12];  /*会计流水号*/
     char  TLogNo  [20];  /*联通流水号*/
@@ -1596,8 +1535,8 @@ typedef struct ICS_DEF_460606_I_MOB{
 
 typedef struct  ICS_DEF_460606_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char  SumCnt[4];       /*总记录数*/
     char  PagNo[4];        /*页数*/
     char  RecNum[4];       /*条数*/
@@ -1614,11 +1553,180 @@ typedef struct ICS_DEF_460604_I_MOB{
 
 typedef struct  ICS_DEF_460604_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*"SC"*/
-    char OFmtCd[3];  /*"D04"*/
+    char ApCode[2];   /*SC*/
+    char OFmtCd[3];  /*D04*/
     char TelNum[15]  ; /*被充值号码*/
     char LogNo[20]  ; /*充值流水号*/
     char TDatTim[20]  ; /*充值时间*/
     char TResult[2]  ; /*充值结构*/
     char TxnAmt[10]  ; /*充值金额*/
 }ICS_DEF_460604_N_MOB;
+
+
+/*
+ * 461501
+ * 查询 单笔非税应收信息
+ * 非税业务广州
+ */
+typedef struct ICS_DEF_461501_I_PNTA{
+    char AdnCod[20]   ; /*通知书编号*/
+    char PBilTyp[10]  ; /*打印票据种类*/
+    char PBilNo[20]   ; /*打印票据编号*/
+    char HndFlg[1]    ; /*手写机打标志*/
+    char UpdAdnFg[1]  ; /*0=正常获取 1=刷新获取*/  
+    char RipFlg[1]    ; /*撕定额票标志 0否 1是*/
+    char DitCod[6]    ; /*行政区划*/
+}ICS_DEF_461501_I_PNTA;
+
+typedef struct ICS_DEF_461501_N_PNTA{
+	   char    TmpDat[4];      /*长度       */
+     char    ApCode[2];     /*SC         */
+     char    OFmtCd[3];      /*D04        */
+	   char    AdnCod   [20];  /*通知书编号*/
+     char    PBilTyp  [10];  /*打印票据种类*/
+     char    PBilNo   [20];  /*打印票据编号*/
+     char    LevFlg   [3];   /*征收方式*/
+     char    WriDat   [8];   /*填制日期*/
+     char    DitCod   [6];   /*行政区划*/
+     char    ColUntCd [42];  /*执收单位编码*/
+     char    ColUntNm [100]; /*执收单位名称*/
+     char    CsgUntCd [42];  /*委托单位编码*/
+     char    CsgUntNm [100]; /*委托单位名称*/
+     char    XPayNam  [80];  /*书面付款人名*/
+     char    XPayAct  [40];  /*书面付款账号*/
+     char    XPayObk  [80];  /*书面付开户行*/
+     char    XGatNam  [80];  /*书面收款人名*/
+     char    XGatAct  [40];  /*书面收款账号*/
+     char    XGatObk  [80];  /*书面收开户行*/
+     char    AdnSmr   [240]; /*备注*/
+     char    StpDat   [8];   /*缴款截止日期*/			  				 
+     char    AdnMac   [4];   /*校验码*/	
+     char    AdnAmt   [15];  /*应收总金额*/	 
+     char    FinAccIn [21];  /*入账账号*/
+     char    PntAmt   [15];  /*非税收入金额*/	 
+     char    AgtAmt   [15];  /*代理代收金额*/	 
+		 char    AgtFlg   [1];   /*代收标识*/
+		 char    RgnFlg   [1];   /*区域标识*/
+		 char    AdnTyp   [10];  /*通知书种类*/
+}ICS_DEF_461501_N_PNTA;
+     
+typedef struct ICS_DEF_461501_E_PNTA{
+    char  TmpDat[4];    /*长度       */
+    char  ApCode1[2];   /*SC         */
+    char  OFmtCd[3];    /*D04        */
+    char  RspCod[6];    /*错误码     */
+    char  InPos[4];     /*0001*/
+    char  RspMsg[56];   /*出错原因   */
+}ICS_DEF_461501_E_PNTA; 
+     
+/*   
+ * 461502
+ * 扣款 单笔非税扣款交易,同时也是交通罚款扣款交易
+ * 非税业务广州
+ */  
+typedef struct ICS_DEF_461502_I_PNTA{   
+		char   AdnCod[20];			 /*通知书编号*/                               				
+		char   AgtFlg[1];			   /*代收标识*/                                 		
+		char   OActFg[1]; 			 /*2存折 4太平洋借记卡 付款账户性质*/                             		
+		char   TxnAmt[15];			 /*应收金额*/                                               		
+		char   HiActNo[21];		   /*银行收款账号*/                            			
+		char   HoActNo[21];		   /*银行扣款账号*/                            		
+		char   HoActNm[60];		   /*银行扣款户名*/                            			
+		char   VchTyp[3];			   /*凭证种类*/                                 	
+		char   VchNo[30];			   /*凭证号码 */                                		
+		char   UdwDat[8];			   /*签发日期 */                                				
+		char   CclNo[12]; 			 /*销账号*/                                   				
+		char   ThdKnd[1];	       /*通知书性质 1普通单 2汇总单 3交罚单 4批扣*/ 
+}ICS_DEF_461502_I_PNTA;
+     
+typedef struct ICS_DEF_461502_N_PNTA{
+    char  TmpDat[4];        /*package length*/
+    char  ApCode[2];        /*SC*/
+    char  OFmtCd[3];        /*D04*/
+}ICS_DEF_461502_N_PNTA;
+
+typedef struct ICS_DEF_461502_E_PNTA{
+    char  TmpDat[4];       /*长度       */
+    char  ApCode1[2];      /*SC         */
+    char  OFmtCd[3];       /*D04        */
+    char  RspCod[6];       /*错误码     */
+    char  InPos[4];        /*0001*/
+    char  RspMsg[56];      /*出错原因   */
+}ICS_DEF_461502_E_PNTA;
+      
+      
+ /*   
+ * 461503
+ * 上送 单笔非税上送财政交易 ,同时也是交通罚款上送交易      
+ * 非税业务广州
+ */   
+typedef struct ICS_DEF_461503_I_PNTA{   
+		char  AdnKnd[1];			/*通知书性质 1普通单 2汇总单 3交罚单 4批量扣款*/                               				
+		char  AdnCod[40];			/*请求书编号*/                                 		
+		char  RgnFlg[1]; 			/*区域标识 0区县级 1市级*/                             		
+}ICS_DEF_461503_I_PNTA;
+      
+typedef struct ICS_DEF_461503_N_PNTA{
+    char  TmpDat[4];       /*package length*/
+    char  ApCode[2];       /*SC*/
+    char  OFmtCd[3];       /*D04*/
+}ICS_DEF_461503_N_PNTA;    
+     
+typedef struct ICS_DEF_461503_E_PNTA{
+    char   TmpDat[4];      /*长度       */
+    char   ApCode1[2];     /*SC         */
+    char   OFmtCd[3];      /*D04        */
+    char   RspCod[6];      /*错误码     */
+    char   InPos[4];       /*0001*/
+    char   RspMsg[56];     /*出错原因   */
+}ICS_DEF_461503_E_PNTA;
+     
+     
+     
+     
+/*   
+ * 461509
+ * 交通罚款应收信息查询
+ * 交通罚款业务--广州
+ */  
+typedef struct ICS_DEF_461509_I_PNTA{   
+		char AdnCod[20]   		  ;      /* 文书编号                               */        				
+		char PBilTyp[10]  		  ;      /* 打印票据种类                           */
+		char PBilNo[20]   		  ;      /* 打印票据编号                           */
+		char HndFlg[1]          ;      /* 手工票标志                             */
+		char UpdAdnFg[1]        ;      /* 0正常获取应收信息 1更新已存应收信息    */
+		char RipFlg[1]          ;      /* 撕定额票标志 0否 1是                   */
+}ICS_DEF_461509_I_PNTA;                                                     
+                                                                           
+typedef struct ICS_DEF_461509_N_PNTA{
+	  char  TmpDat[4];     /*package length*/
+    char  ApCode[2];     /*SC*/
+    char  OFmtCd[3];     /*D04*/
+    char  AdnCod[20]    ;/*文书编号     */
+    char  PBilTyp[10]   ;/*打印票据种类 */
+    char  PBilNo[20]    ;/*打印票据编号 */
+    char  LevFlg[3]     ;/*征收方式     */
+    char  DitCod[6]     ;/*行政区划     */
+    char  ColUntCd[42]  ;/*执收单位编码 */
+    char  ColUntNm[100] ;/*执收单位名称 */
+    char  CsgUntNm[100] ;/*执罚单位名称 */
+    char  XPayNam[80]   ;/*当事人       */
+    char  XGatNam[80]   ;/*收款人名称   */
+    char  AdnSmr[240]   ;/*违法信息备注*/
+    char  AdnAmt[15]    ;/*应收总金额	  */
+    char  FinAccIn[21]  ;/*入账账号     */
+    char  PntAmt[15]    ;/*非税收入金额	*/ 
+    char  AgtAmt[15]    ;/*代理代收金额	*/ 
+    char  AgtFlg[1]     ;/*代收标识     */
+    char  RgnFlg[1]     ;/*区域标识     */
+    char  AdnTyp[10]    ;/*通知书种类   */
+}ICS_DEF_461509_N_PNTA;   
+     
+typedef struct ICS_DEF_461509_E_PNTA{
+    char  TmpDat[4];      /*长度       */
+    char  ApCode1[2];     /*SC         */
+    char  OFmtCd[3];      /*D04        */
+    char  RspCod[6];      /*错误码     */ 
+    char  InPos[4];       /*0001*/
+    char  RspMsg[56];     /*出错原因   */
+}ICS_DEF_461509_E_PNTA;                                

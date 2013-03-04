@@ -62,6 +62,7 @@ int ics_proc_482173(char *send_buff,char *recv_buff)
   char      sTranNo[16];
   char      sTranDate[11];
   char      sTellerNo[8];
+  char      sTxnCnl[32];
   char      sErrMsg[64];
   char      ics_port[6];
 
@@ -107,7 +108,8 @@ int ics_proc_482173(char *send_buff,char *recv_buff)
   memset(s_PSWD, '\0', sizeof(s_PSWD));
   memset(sTxnAmt, '\0', sizeof(sTxnAmt));
   memset(sphone, '\0', sizeof(sphone));
-
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  
 flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
 
   /* STEP1-2:填上传串的固定头 */
@@ -149,6 +151,12 @@ flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->Fil," ");
 
   /* STEP1-3: 填上传串的元素值*/
+  
+  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
+  
+  
   getValueOfStr(send_buff,"CTSQ", sphone);   /* 手机号码 */
   strcpy(pICS_482173_I->user_number, sphone);
   getValueOfStr(send_buff,"AMT1", sTxnAmt); /*交易金额*/

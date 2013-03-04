@@ -318,16 +318,46 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
             switch(i_biz_step_id)
             {
                 case 1: /*被充值号码验证(010201)*/
-                    ret=ics_proc_460601_unca(send_buff,recv_buff);break;
-                case 2: /*给被充值号码充值(010202)*/
+                    ret=ics_proc_460601_unca(send_buff,recv_buff);
+                    break;
+                /*case 2: 给被充值号码充值(010202)
                     ret=ics_proc_460602_unca(send_buff,recv_buff);break;
-                case 3: /*通过卡号查询缴费会计流水号*/
+                case 3: 通过卡号查询缴费会计流水号
                     ret=ics_proc_460606_unca(send_buff,recv_buff);break;
-                case 4: /*缴费记录查询(010204)*/
-                    ret=ics_proc_460604_unca(send_buff,recv_buff);break;
+                case 4: 缴费记录查询(010204)
+                    ret=ics_proc_460604_unca(send_buff,recv_buff);break;*/
             }
             break;
         /*add 20121119 联通直联 end */
+        
+        /*add 20130225 非税业务 begin*/
+        
+        case 34:    /* 广州市非税业务*/
+            switch(i_biz_step_id)
+            {
+                case 1: /*普通非税的应缴查询*/
+                    ret=ics_proc_461501_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461501--------ret=[%d]",ret);
+                    break;
+                case 2: /*交通罚款的应缴查询*/
+                    ret=ics_proc_461509_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461509--------ret=[%d]",ret);
+                    break;
+                case 3: /*扣款交易*/
+                    ret=ics_proc_461502_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461502--------ret=[%d]",ret);
+                    break;
+                case 4: /*上送财政扣款信息*/
+                    ret=ics_proc_461503_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461503--------ret=[%d]",ret);
+                    break;
+            }
+            break;
+        /*add 20130225 非税业务 end */
+        
+        
+        
+        
         default:
             break;
     }

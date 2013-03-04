@@ -52,6 +52,7 @@ int ics_proc_482181(char *send_buff,char *recv_buff)
   char			sLen[8];
   char			sLeft[14];
   char			sRight[3];
+  char      sTxnCnl[32];
   char			ics_port[6];
 
   FILE 			*fp;
@@ -78,6 +79,8 @@ int ics_proc_482181(char *send_buff,char *recv_buff)
 	memset(tmp_val_str2,'\0',sizeof(tmp_val_str2));
 	memset(tmp_val_str3,'\0',sizeof(tmp_val_str3));
 	memset(display_str,'\0',sizeof(display_str));
+	memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+	
 	memset(tmpvalue,'\0',sizeof(tmpvalue));
   
 flog( STEP_LEVEL,"--482181 接收[%s]-------------------------------",send_buff);
@@ -109,6 +112,12 @@ flog( STEP_LEVEL,"--482181 接收[%s]-------------------------------",send_buff);
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil,"  ");
+
+
+ /*将终端的交易渠道赋值进来*/
+  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   /* STEP1-3: 填上传串中的固定元素值*/
    /*strcpy(pICS_482180_I->MsgType,"1123");消息类别(查询余额)*/

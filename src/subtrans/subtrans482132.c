@@ -74,7 +74,7 @@ int ics_proc_482132(char *send_buff,char *recv_buff)
   char  Return_Code[4];               /*处理结果*/
   char  PB_Return_Code_Msg[31];       /*处理结果信息*/
   char  TckNo[12];                    /*会计流水*/
-  char       sTxnCnl[32];
+  char  sTxnCnl[32];
     
   time_t    cur_time;
 
@@ -125,6 +125,7 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482132");
   strcpy(pICS_TIA->FeCod,"482132");
   strcpy(pICS_TIA->TrmNo,"DVID");
+  
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
   flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
   strcpy(pICS_TIA->TxnSrc,sTxnCnl);
@@ -140,6 +141,8 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
     return ret;
+    
+    
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");

@@ -64,7 +64,7 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   char      sErrMsg[64];
   char      PB_Return_Code_Msg[64];
   char      ics_port[6];
-
+  char      sTxnCnl[32];
   char      sSTxnAmt[32];
   char      sTCusNm[32];
   char      sLoSeq[32];
@@ -93,7 +93,8 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
   memset(ics_482138o_buff, 0, sizeof(ics_482138o_buff));
-
+	memset(sTxnCnl, 0, sizeof(sTxnCnl));
+	
   pICS_482138_I=(ICS_DEF_482138_I *)ics_482138i_buff;
   pICS_482138_N=(ICS_DEF_482138_N *)ics_482138n_buff;
   pICS_482138_E=(ICS_DEF_482138_E *)ics_482138e_buff;
@@ -123,7 +124,6 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"482138");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -135,6 +135,10 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
   return ret;
+  
+  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");

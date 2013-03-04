@@ -83,7 +83,7 @@ int ics_proc_482135(char *send_buff,char *recv_buff)
   char  Return_Code[4];           /*处理结果*/
   char  PB_Return_Code_Msg[31];   /*处理结果信息*/
   char  TckNo[12];                /*会计流水*/
-  char       sTxnCnl[32];
+  char  sTxnCnl[32];
 
   time_t    cur_time;
 

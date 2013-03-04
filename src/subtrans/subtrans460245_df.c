@@ -1,3 +1,9 @@
+/****************************************
+ *程序名:trans460245.c
+ *功  能:电力缴费
+ *日  期:
+ ****************************************/
+
 #include        <stdio.h>
 #include        <stdlib.h>
 #include        <memory.h>
@@ -55,15 +61,15 @@ int ics_proc_460245_df(char *send_buff,char *recv_buff)
   char      sRight[3];
   char      sTranNo[16];
   char      sTranDate[11];
+  char      sTxnCnl[32];
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-  
-
   time_t    cur_time;
-
   struct tm   *my_tm;
 
+
+  
   FILE      *fp;
 
 /*
@@ -96,6 +102,7 @@ int ics_proc_460245_df(char *send_buff,char *recv_buff)
   memset(sTranNo,'\0',sizeof(sTranNo));
   memset(sErrMsg,'\0',sizeof(sErrMsg));
   memset(sTranDate,'\0',sizeof(sTranDate));
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(s_CDNO, '\0', sizeof(s_CDNO));
   memset(s_PSWD, '\0', sizeof(s_PSWD));
@@ -112,7 +119,7 @@ flog( STEP_LEVEL,"--460245 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"460245");
   strcpy(pICS_TIA->FeCod,"460245");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"WB441");
+  
 
   /*交易编号和交易日期*/
   time(&cur_time);
@@ -120,7 +127,16 @@ flog( STEP_LEVEL,"--460245 接收[%s]------------------------------",send_buff);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
   sprintf(sTranDate,"%d-%d-%d",my_tm->tm_year+1900,my_tm->tm_mon+1,my_tm->tm_mday);
   
+  
+  /*将终端的交易渠道赋值进来*/
+  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
+  
   strcpy(pICS_TIA->NodTrc,sTranNo);   /*柜员号*/
+  
+  
+  
 
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)

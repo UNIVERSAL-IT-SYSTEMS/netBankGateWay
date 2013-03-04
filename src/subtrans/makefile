@@ -61,9 +61,13 @@ OBJS=	subtrans482101.o  \
   subtrans460245_df.o   \
   subtrans460501_mob.o  \
   subtrans460506_mob.o  \
-  subtrans460511_mob.o
- 
-	
+  subtrans460511_mob.o  \
+  subtrans460601_unca.o \
+  subtrans461501_pnta.o \
+  subtrans461502_pnta.o \
+  subtrans461503_pnta.o \
+  subtrans461509_pnta.o
+
 TARGET=libsubtrans.a
 TARGET_DIR=$(HOME)/lib/
 

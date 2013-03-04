@@ -26,8 +26,8 @@ int ics_proc_482108(char *send_buff,char *recv_buff)
  */
 
   int			i;	
-  int 			len;
-  int                   ret;
+  int 		len;
+  int     ret;
   int			offset;
   int			i_biz_id;
 
@@ -47,12 +47,13 @@ int ics_proc_482108(char *send_buff,char *recv_buff)
   char 			tmp_val_str[LEN_TMP_VAL_STR];
   char 			tmp_val_str2[LEN_TMP_VAL_STR];
   char 			display_str[LEN_ICS_PROC_BUF];
-  char                  tmpvalue[40]; 	/*从上传报文中取得的某项值*/
+  char      tmpvalue[40]; 	/*从上传报文中取得的某项值*/
   char			sLen[8];
   char			sLeft[14];
   char			sRight[3];
   char			sPSWD[6];
   char			sAMT1[15];
+  char      sTxnCnl[32];
   char			ics_port[6];
 
   FILE 			*fp;
@@ -61,11 +62,11 @@ int ics_proc_482108(char *send_buff,char *recv_buff)
 
   /* STEP1-1:清理结构和变量 */
 
-        pICS_482108_I=(ICS_DEF_482108_I *)ics_482108i_buff;
-        pICS_482108_N=(ICS_DEF_482108_N *)ics_482108n_buff;
-        pICS_482108_E=(ICS_DEF_482108_E *)ics_482108e_buff;
-        pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
-        pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
+  pICS_482108_I=(ICS_DEF_482108_I *)ics_482108i_buff;
+  pICS_482108_N=(ICS_DEF_482108_N *)ics_482108n_buff;
+  pICS_482108_E=(ICS_DEF_482108_E *)ics_482108e_buff;
+  pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
+  pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
 
 	memset(ics_send_buff,'\0',sizeof(ics_send_buff));
 	memset(ics_recv_buff,'\0',sizeof(ics_recv_buff));
@@ -74,11 +75,12 @@ int ics_proc_482108(char *send_buff,char *recv_buff)
 	memset(ics_482108e_buff,'\0',sizeof(ics_482108e_buff));
 	memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
 	memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
+	memset(sTxnCnl, '\0', sizeof(sTxnCnl));
 
-        memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-        memset(tmp_val_str2,'\0',sizeof(tmp_val_str2));
-        memset(display_str,'\0',sizeof(display_str));
-        memset(tmpvalue,'\0',sizeof(tmpvalue));
+  memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+  memset(tmp_val_str2,'\0',sizeof(tmp_val_str2));
+  memset(display_str,'\0',sizeof(display_str));
+  memset(tmpvalue,'\0',sizeof(tmpvalue));
   
 flog( STEP_LEVEL,"--482108 接收[%s]-------------------------------",send_buff);
 
@@ -122,6 +124,10 @@ flog( STEP_LEVEL,"--482108 接收[%s]-------------------------------",send_buff);
   memset(tmpvalue,'\0',sizeof(tmpvalue));
   getValueOfStr(send_buff,"CTSQ",tmpvalue); /*缴费号码*/
   strcpy(pICS_482108_I->TCusID,tmpvalue);
+  
+  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   memset(tmpvalue,'\0',sizeof(tmpvalue));
   getValueOfStr(send_buff,"PSWD",tmpvalue); /*移动密码*/
