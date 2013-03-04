@@ -63,6 +63,7 @@ OBJS=	subtrans482101.o  \
   subtrans460506_mob.o  \
   subtrans460511_mob.o  \
   subtrans460601_unca.o \
+  subtrans460602_unca.o \
   subtrans461501_pnta.o \
   subtrans461502_pnta.o \
   subtrans461503_pnta.o \
