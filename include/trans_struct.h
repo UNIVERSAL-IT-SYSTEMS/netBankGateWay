@@ -1498,10 +1498,10 @@ typedef struct ICS_DEF_460601_I_MOB{
 }ICS_DEF_460601_I_MOB;
 
 typedef struct  ICS_DEF_460601_N_MOB{
-    char  TmpDat[4];   /*package length*/
-    char  ApCode[2];   /*SC*/
-    char  OFmtCd[3];  /*D04*/
-    char  AreCod[4]  ; /*地区号*/
+    char  TmpDat  [4];   /*package length*/
+    char  ApCode  [2];   /*SC*/
+    char  OFmtCd  [3];  /*D04*/
+    char  AreCod  [4]  ; /*地区号*/
 }ICS_DEF_460601_N_MOB;
 
 /*
@@ -1510,16 +1510,16 @@ typedef struct  ICS_DEF_460601_N_MOB{
  */
 typedef struct ICS_DEF_460602_I_MOB{
     char  TelNum  [20];  /*被充值号码*/
-    char  CrdNo  [15];  /*卡号*/
+    char  CrdNo   [21];  /*卡号*/
     char  TxnAmt  [15];  /*充值金额*/
 }ICS_DEF_460602_I_MOB;
 
 typedef struct  ICS_DEF_460602_N_MOB{
-    char  TmpDat[4];   /*package length*/
-    char  ApCode[2];   /*SC*/
-    char  OFmtCd[3];  /*D04*/
+    char  TmpDat  [4];   /*package length*/
+    char  ApCode  [2];   /*SC*/
+    char  OFmtCd  [3];  /*D04*/
     char  ActDat  [8];  /*会计日期*/
-    char  TckNo  [12];  /*会计流水号*/
+    char  TckNo   [12];  /*会计流水号*/
     char  TLogNo  [20];  /*联通流水号*/
 }ICS_DEF_460602_N_MOB;
 

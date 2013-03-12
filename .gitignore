@@ -14,7 +14,11 @@ makefile.*
 *.2011*
 *.2012*
 src/subtrans/subtrans482138.c.091106
-/func\ebankdg/*.20011027
+*.20011027
 core
 /src/*.bk
 ¸´¼þ*
+/src/¸´¼þ mid_process.c
+/src\test/makefile
+/src\test/test
+/src\test/test.c
