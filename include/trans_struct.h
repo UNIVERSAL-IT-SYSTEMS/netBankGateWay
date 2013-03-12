@@ -1,4 +1,3 @@
-
 /* HSTTIA */
 typedef struct ICS_DEF_TIA{
     char CCSCod[4];
@@ -1305,30 +1304,30 @@ typedef struct ICS_DEF_482184_E{
  */
 
 typedef struct ICS_DEF_460244_I{
-        char ActNo[21];   /*银行卡号*/
-        char TCusId[21];     /*客户编号*/
-        char LChkTm[8];  /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
+    char ActNo[21];   /*银行卡号*/
+    char TCusId[21];     /*客户编号*/
+    char LChkTm[8];  /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
 }ICS_DEF_460244_I;
 
 
 typedef struct ICS_DEF_460244_N{
-        char TmpDat[4];      /*package length*/ 
-        char ApCode[2];     /*SC*/
-        char OFmtCd[3];     /*D04*/
-        char TxnAmt[15];   /*交易金额*/
-        char ChkTim[10];   /*交易日期时间*/
-        char DptTyp[4];    /*配营部类型*/
-        char UsrNam[23];   /*用户姓名*/
-        char UsrAdd[32];   /*用电地址*/
+    char TmpDat[4];      /*package length*/ 
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char TxnAmt[15];   /*交易金额*/
+    char ChkTim[10];   /*交易日期时间*/
+    char DptTyp[4];    /*配营部类型*/
+    char UsrNam[23];   /*用户姓名*/
+    char UsrAdd[32];   /*用电地址*/
  }ICS_DEF_460244_N;
 
 typedef struct ICS_DEF_460244_E{
-        char TmpDat[4];     /*package length*/
-        char ApCode[2];     /*SC*/
-        char OFmtCd[3];     /*D04*/
-        char  RspCod[6];    /* */
-        char InPos[4];     /*0001*/
-        char RspMsg[56];/*出错原因*/
+    char TmpDat[4];     /*package length*/
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char  RspCod[6];    /* */
+    char InPos[4];     /*0001*/
+    char RspMsg[56];/*出错原因*/
 }ICS_DEF_460244_E;
 
 
@@ -1339,37 +1338,37 @@ typedef struct ICS_DEF_460244_E{
  */
 
 typedef struct ICS_DEF_460245_I{
-        char ActNo[21];   /*主账号*/
-        char TCusId[21];  /*客户编号*/
-        char TCusNm[23];  /*用户姓名*/
-        char LChkTm[8];   /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
-        char DptTyp[4];   /*配型部类型*/
-        char TxnAmt[12];  /*交易金额*/
-        char Fee[12];     /*交易手续费*/
-        char VchTyp[3];   /*结算凭证*/
-        char VchNo[8];    /*凭证号*/
-        char BilDat[8];   /*凭证日期*/
-        char PinBlk[20];  /*密码*/
+    char ActNo[21];   /*主账号*/
+    char TCusId[21];  /*客户编号*/
+    char TCusNm[23];  /*用户姓名*/
+    char LChkTm[8];   /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
+    char DptTyp[4];   /*配型部类型*/
+    char TxnAmt[12];  /*交易金额*/
+    char Fee[12];     /*交易手续费*/
+    char VchTyp[3];   /*结算凭证*/
+    char VchNo[8];    /*凭证号*/
+    char BilDat[8];   /*凭证日期*/
+    char PinBlk[20];  /*密码*/
 }ICS_DEF_460245_I;
 
 typedef struct  ICS_DEF_460245_N{
-        char TmpDat[4];   /*package length*/
-	char ApCode[2];   /*"SC"*/
-        char OFmtCd[3];  /*"D04"*/
-        char TLogNo[12];  /*供电公司系统参考号*/
-        char TckNo[12];   /*会计业务流水号*/
-        char TActDt[4];   /*供电公司清算日期*/
+    char TmpDat[4];   /*package length*/
+	  char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char TLogNo[12];  /*供电公司系统参考号*/
+    char TckNo[12];   /*会计业务流水号*/
+    char TActDt[4];   /*供电公司清算日期*/
 }ICS_DEF_460245_N;
 
 typedef struct ICS_DEF_460245_E{
-        char TmpDat[4];
-	char ApCode[2];  /*"SC"*/
-        char OFmtCd[3];  /*"D04"*/
-        char RspCod[6];  /* */
-        char InPos[4];   /*0001*/
-        char RspMsg[56]; /* */
-        char LogNo[14];  /*  */
-        char TckNo[12];  /*  */
+    char TmpDat[4];
+	  char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* */
+    char LogNo[14];  /*  */
+    char TckNo[12];  /*  */
 }ICS_DEF_460245_E;  
 
 
@@ -1377,21 +1376,20 @@ typedef struct ICS_DEF_460245_E{
  * 461501
  * 普通非税应收信息查询
  */
- 
- typedef struct ICS_DEF_461501_I{
-        char AdnCod[20];   /*通知书编号*/
-        char PBilTyp[10];  /*打印票据种类*/
-        char PBilNo[20];   /*打印票据编号*/
-        char HndFlg[1];    /*通知书填写方式*/
-        char UpdAdnFg[1];  /*查询刷新标志*/
-        char RipFlg[1];    /*斯定额票标志*/
-        char DitCod[6];    /*行政区划*/
+typedef struct ICS_DEF_461501_I{
+    char AdnCod[20];   /*通知书编号*/
+    char PBilTyp[10];  /*打印票据种类*/
+    char PBilNo[20];   /*打印票据编号*/
+    char HndFlg[1];    /*通知书填写方式*/
+    char UpdAdnFg[1];  /*查询刷新标志*/
+    char RipFlg[1];    /*斯定额票标志*/
+    char DitCod[6];    /*行政区划*/
 }ICS_DEF_461501_I;
 
 typedef struct  ICS_DEF_461501_N{
-        char AdnCod[20];   /*通知书编号*/
-        char PBilTyp[10];  /*打印票据种类*/
-        char PBilNo[20];   /*打印票据编号*/
+    char AdnCod[20];   /*通知书编号*/
+    char PBilTyp[10];  /*打印票据种类*/
+    char PBilNo[20];   /*打印票据编号*/
 		char LevFlg[3];    /*征收方式*/
 		char WriDat[8];    /*填制日期*/
 		char DitCod[6];    /*行政区划*/
@@ -1423,13 +1421,13 @@ typedef struct  ICS_DEF_461501_N{
 		char ItmAmt[15];    /*金额*/
 		char LatTyp[1];     /*滞纳金类型*/
 		char ItmTyp[1];     /*项目类型*/
-        char IgatAct[40];   /*收入账号*/
-        char IgatNam[80];   /*收入户名*/
-        char IgatBnm[80];	/*收入行名*/	  
+    char IgatAct[40];   /*收入账号*/
+    char IgatNam[80];   /*收入户名*/
+    char IgatBnm[80];	/*收入行名*/	  
 }ICS_DEF_461501_N;
 
 typedef struct ICS_DEF_461501_E{
-        char sjcd[4];    /*数据长度*/
+    char sjcd[4];    /*数据长度*/
 		char sjgs[5];    /*数据格式*/
 		char RspCod[6];
 		char InPos[4];
@@ -1441,37 +1439,186 @@ typedef struct ICS_DEF_461501_E{
  * 460501
  * 移动划扣充值业务签约交易
  */
-
 typedef struct ICS_DEF_460501_I_MOB{
-        char SigTyp[1];   /*签约类型*/
-        char VchNO[8];  /*凭证号*/
-        char ActTyp[1];  /*账号类型*/
-        char ActNo[28];   /*银行账号*/
-        char ActNam[32];   /*银行账号名称*/
-        char IdTyp[02];  /*证件类型*/
-        char IdNo[20];     /*证件号码*/
-        char CusNam[32];   /*客户姓名*/
-        char MstTel[20];    /*主手机号码*/
-        char SigTel[20];   /*签约手机号码*/
-        char SigFlg[1];  /*签约标记（主0/副1）*/
-        char PINDat[20];  /*银行交易密码*/
+    char SigTyp[1];   /*签约类型*/
+    char VchNO[8];  /*凭证号*/
+    char ActTyp[1];  /*账号类型*/
+    char ActNo[28];   /*银行账号*/
+    char ActNam[32];   /*银行账号名称*/
+    char IdTyp[02];  /*证件类型*/
+    char IdNo[20];     /*证件号码*/
+    char CusNam[32];   /*客户姓名*/
+    char MstTel[20];    /*主手机号码*/
+    char SigTel[20];   /*签约手机号码*/
+    char SigFlg[1];  /*签约标记（主0/副1）*/
+    char PINDat[20];  /*银行交易密码*/
 }ICS_DEF_460501_I_MOB;
 
 typedef struct  ICS_DEF_460501_N_MOB{
-        char TmpDat[4];   /*package length*/
-        char ApCode[2];   /*"SC"*/
-        char OFmtCd[3];  /*"D04"*/
-        char MstTel[20];  /*主手机号码*/
-        char SigTel[20];   /*签约手机号码*/
-        char LogNo[30];   /*移动返回流水号*/
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char MstTel[20];  /*主手机号码*/
+    char SigTel[20];   /*签约手机号码*/
+    char LogNo[30];   /*移动返回流水号*/
 }ICS_DEF_460501_N_MOB;
 
 typedef struct ICS_DEF_460501_E_MOB{
-        char TmpDat[4];
-        char ApCode[2];  /*"SC"*/
-        char OFmtCd[3];  /*"D04"*/
-        char RspCod[6];  /* */
-        char InPos[4];   /*0001*/
-        char RspMsg[56]; /* */
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* */
 }ICS_DEF_460501_E_MOB;  
 
+/*
+ * 460506
+ * 移动划扣充值业务解约交易
+ */
+typedef struct ICS_DEF_460506_I_MOB{
+    char  BisTyp  [1]   ; /*交易类型1：主号捆绑解除；2：全部签约号码解除*/
+    char  ActTyp  [1]   ; /*账号类型*/
+    char  ActNo   [28]  ; /*银行账号*/
+    char  ActNam  [32]  ; /*银行账号名称*/
+    char  VchNO   [8]   ; /*凭证号*/
+    char  IdTyp   [2]   ; /*证件类型*/
+    char  IdNo    [20]  ; /*证件号码*/
+    char  CusNam  [32]  ; /*证件姓名*/
+    char  MstTel  [20]  ; /*主手机号码*/
+    char  PINDat  [20]  ; /*银行交易密码*/
+}ICS_DEF_460506_I_MOB;
+
+typedef struct  ICS_DEF_460506_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  ActTyp  [1]   ; /* 账号类型 */
+    char  ActNo   [28]  ; /*银行账号*/
+    char  IdTyp   [2]   ; /* 证件类型 */
+    char  IdNo    [20]  ; /* 证件号码 */
+    char  CusNam  [32]  ; /* 证件姓名 */
+    char  MstTel  [20]  ; /* 主手机号码 */
+}ICS_DEF_460506_N_MOB;
+
+typedef struct ICS_DEF_460506_E_MOB{
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* 错误信息 */
+}ICS_DEF_460506_E_MOB;  
+
+/*
+ * 460511
+ * 查询账户信息（嵌套）
+ */
+typedef struct ICS_DEF_460511_I_MOB{
+    char  ActNo  [21]   ; /*帐号*/
+}ICS_DEF_460511_I_MOB;
+
+typedef struct  ICS_DEF_460511_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  IdTyp  [2]  ; /*证件种类*/
+    char  IdNo   [20] ; /*证件号码*/
+    char  ActNam [32] ; /*户名*/
+    char  ActSts [1]  ; /*帐户状态*/
+}ICS_DEF_460511_N_MOB;
+
+typedef struct ICS_DEF_460511_E_MOB{
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* 错误信息 */
+}ICS_DEF_460511_E_MOB;  
+
+/*
+ * 通用错误
+ */
+typedef struct ICS_DEF_DEFAULT_E{
+    char  TmpDat[4];
+    char  ApCode[2];  /*"SC"*/
+    char  OFmtCd[3];  /*"D04"*/
+    char  RspCod[6];  /* */
+    char  InPos[4];   /*0001*/
+    char  RspMsg[56]; /* 错误信息 */
+}ICS_DEF_DEFAULT_E;  
+
+
+/*
+ * 460601
+ * 被充值号码验证(010201)
+ */
+typedef struct ICS_DEF_460601_I_MOB{
+    char  TelNum  [20]   ; /*帐号*/
+}ICS_DEF_460601_I_MOB;
+
+typedef struct  ICS_DEF_460601_N_MOB{
+    char  TmpDat[4];   /*package length*/
+    char  ApCode[2];   /*"SC"*/
+    char  OFmtCd[3];  /*"D04"*/
+    char  AreCod[4]  ; /*地区号*/
+}ICS_DEF_460601_N_MOB;
+
+/*
+ * 460602
+ * 给被充值号码充值(010202)
+ */
+typedef struct ICS_DEF_460602_I_MOB{
+    char  TelNum  [20];  /*被充值号码*/
+    char  CrdNo  [15];  /*卡号*/
+    char  TxnAmt  [15];  /*充值金额*/
+}ICS_DEF_460602_I_MOB;
+
+typedef struct  ICS_DEF_460602_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  ActDat  [8];  /*会计日期*/
+    char  TckNo  [12];  /*会计流水号*/
+    char  TLogNo  [20];  /*联通流水号*/
+}ICS_DEF_460602_N_MOB;
+
+/*
+ * 460606
+ * 通过卡号查询缴费会计流水号
+ * TODO 研究拆包方式
+ */
+typedef struct ICS_DEF_460606_I_MOB{
+    char  CrdNo  [15];    /*卡号*/
+    char  PagIdx  [6];    /*页码编号*/
+}ICS_DEF_460606_I_MOB;
+
+typedef struct  ICS_DEF_460606_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  SumCnt[4];       /*总记录数*/
+    char  PagNo[4];        /*页数*/
+    char  RecNum[4];       /*条数*/
+}ICS_DEF_460606_N_MOB;
+
+/*
+ * 460604
+ * 缴费记录查询(010204)
+ */
+typedef struct ICS_DEF_460604_I_MOB{
+    char  ActDat  [8]   ; /*会计日期*/
+    char  RsFld1  [20]  ; /*发起方流水号*/
+}ICS_DEF_460604_I_MOB;
+
+typedef struct  ICS_DEF_460604_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char TelNum[15]  ; /*被充值号码*/
+    char LogNo[20]  ; /*充值流水号*/
+    char TDatTim[20]  ; /*充值时间*/
+    char TResult[2]  ; /*充值结构*/
+    char TxnAmt[10]  ; /*充值金额*/
+}ICS_DEF_460604_N_MOB;

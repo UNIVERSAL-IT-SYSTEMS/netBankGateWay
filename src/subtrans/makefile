@@ -59,7 +59,9 @@ OBJS=	subtrans482101.o  \
   subtrans482999.o      \
   subtrans460244_df.o   \
   subtrans460245_df.o   \
-  subtrans460501_mob.o
+  subtrans460501_mob.o  \
+  subtrans460506_mob.o  \
+  subtrans460511_mob.o
  
 	
 TARGET=libsubtrans.a
