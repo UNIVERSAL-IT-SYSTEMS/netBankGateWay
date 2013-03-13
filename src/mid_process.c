@@ -320,9 +320,10 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
                 case 1: /*被充值号码验证(010201)*/
                     ret=ics_proc_460601_unca(send_buff,recv_buff);
                     break;
-                /*case 2: 给被充值号码充值(010202)
-                    ret=ics_proc_460602_unca(send_buff,recv_buff);break;
-                case 3: 通过卡号查询缴费会计流水号
+                case 2: /*给被充值号码充值(010202)*/
+                    ret=ics_proc_460602_unca(send_buff,recv_buff);
+                    break;
+                /*case 3: 通过卡号查询缴费会计流水号
                     ret=ics_proc_460606_unca(send_buff,recv_buff);break;
                 case 4: 缴费记录查询(010204)
                     ret=ics_proc_460604_unca(send_buff,recv_buff);break;*/
