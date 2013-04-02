@@ -204,7 +204,7 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   }
 
   /* 校验密码 */
-  flog( STEP_LEVEL,"----校验密码----\n");
+  /*flog( STEP_LEVEL,"----校验密码----\n");
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
@@ -216,7 +216,7 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   {
 		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
 		goto RETURN;
-  }
+  }*/
 
   /*发往ICS需加8位报文长度*/
   offset=0;
