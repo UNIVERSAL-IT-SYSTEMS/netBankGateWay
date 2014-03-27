@@ -59,6 +59,7 @@ int ics_proc_482171(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
+  char      sTxnCnl[32];
   
   char      User_status[3];
   char 			sStatus[16];
@@ -110,7 +111,16 @@ int ics_proc_482171(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"482171");
   
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"WE441");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);

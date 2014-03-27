@@ -55,7 +55,9 @@ int ics_proc_482159(char *send_buff,char *recv_buff)
   char    	sTranNo[16];
 	char			sTranDate[11];
   char    	sTellerNo[8];
-  char			ics_port[6];    
+  char			ics_port[6];   
+  char      sTxnCnl[32];
+    
   char			tmp_buf[LEN_ICS_PROC_BUF];
   time_t    cur_time;
 
@@ -100,7 +102,17 @@ flog( STEP_LEVEL,"--482159 接收[%s]-------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482159");
   strcpy(pICS_TIA->FeCod,"482159");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");  
+  
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
   
   time(&cur_time);
   my_tm = localtime(&cur_time);

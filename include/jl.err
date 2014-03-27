@@ -85,7 +85,7 @@ char SFFP[10];		 /*水费发票号*/
 char ZZFP[12];		 /*发票版本号*/
 char AGMD[1];		 /*缴费方式0-现金,1-卡,-2支票*/
 char AMNT[13];		 /*缴费金额*/
-char CDNO[17];		 /*卡号*/
+char CDNO[19];		 /*卡号*/
 char DESP[8];		 /*密码*/
 }MID_DEF_8642_I;
 

@@ -61,11 +61,11 @@ int ics_proc_482140(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-  char      sTxnCnl[32];
+  
 	char  IDTyp[3];
 	char  IDNo[31];
 	char  ActNam[61];
-	
+	char      sTxnCnl[32];
 		
   time_t    cur_time;
 
@@ -105,26 +105,31 @@ int ics_proc_482140(char *send_buff,char *recv_buff)
   memset(sTranDate,'\0',sizeof(sTranDate));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
-  
+
 flog( STEP_LEVEL,"--482140 接收[%s]------------------------------",send_buff);
+
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");
   strcpy(pICS_TIA->TTxnCd,"482140");
   strcpy(pICS_TIA->FeCod,"482140");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  
+
   time(&cur_time);
   my_tm = localtime(&cur_time);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
   sprintf(sTranDate,"%d-%d-%d",my_tm->tm_year+1900,my_tm->tm_mon+1,my_tm->tm_mday);
 
   strcpy(pICS_TIA->NodTrc,sTranNo);
-  
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)

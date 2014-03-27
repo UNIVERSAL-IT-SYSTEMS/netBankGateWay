@@ -59,6 +59,7 @@ int ics_proc_481152(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
+  char      sTxnCnl[32];
 
 	int iRecNum;
 	int iRecIdx;
@@ -101,6 +102,7 @@ int ics_proc_481152(char *send_buff,char *recv_buff)
   memset(sErrMsg,'\0',sizeof(sErrMsg));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
+  
 
   flog( STEP_LEVEL,"--481152 接收[%s]------------------------------",send_buff);
 
@@ -110,7 +112,7 @@ int ics_proc_481152(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"481152");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
+  
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -142,7 +144,18 @@ int ics_proc_481152(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil," ");
-
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+  
+  
   /* STEP1-3: 填上传串的元素值*/
   strcpy(pICS_481152_I->TxnDat, "20090108");    /*日期*/
   strcpy(pICS_481152_I->AbuTyp, "0002");        /*卡类*/

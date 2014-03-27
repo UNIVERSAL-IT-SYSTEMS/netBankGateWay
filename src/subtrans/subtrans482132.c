@@ -51,8 +51,8 @@ int ics_proc_482132(char *send_buff,char *recv_buff)
   char      display_log_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[256];  /*从上传报文中取得的某项值*/
   
-  char      s_CDNO[LEN_CDNO]; /* 卡号 */
-  char      s_PSWD[21]; /* 密码 */
+  char			s_CDNO[LEN_CDNO]; /* 卡号 */
+  char			s_PSWD[21]; /* 密码 */
   
   char      sLen[8];
   char      sLeft[14];
@@ -62,20 +62,20 @@ int ics_proc_482132(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-  
-  char  Trans_Toal_Amount[15];
-  char  Trans_Toal_Amount2[15];
-  char  Reserve_Code[51];
-  char  Product_Name[61]; 
-  char  Provide_Name[61]; 
+	
+	char  Trans_Toal_Amount[15];
+	char  Trans_Toal_Amount2[15];
+	char  Reserve_Code[51];
+	char  Product_Name[61]; 
+	char  Provide_Name[61]; 
 
-  char  TCusNm[13];                    /*订单编号*/
-  char  ThdKey[19];                    /*银行交易流水号*/
-  char  Return_Code[4];               /*处理结果*/
-  char  PB_Return_Code_Msg[31];       /*处理结果信息*/
-  char  TckNo[12];                    /*会计流水*/
-  char  sTxnCnl[32];
-    
+	char  TCusNm[13];      							/*订单编号*/
+	char  ThdKey[19];        						/*银行交易流水号*/
+	char  Return_Code[4];       				/*处理结果*/
+	char  PB_Return_Code_Msg[31];       /*处理结果信息*/
+	char  TckNo[12];        						/*会计流水*/
+	char 			sTxnCnl[32];
+		
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -114,9 +114,9 @@ int ics_proc_482132(char *send_buff,char *recv_buff)
   memset(sTranDate,'\0',sizeof(sTranDate));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(s_CDNO, '\0', sizeof(s_CDNO));
-  memset(s_PSWD, '\0', sizeof(s_PSWD));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+	memset(s_CDNO, '\0', sizeof(s_CDNO));
+	memset(s_PSWD, '\0', sizeof(s_PSWD));
+	memset(sTxnCnl,'\0', sizeof(sTxnCnl));
 
 flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
 
@@ -126,10 +126,16 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->FeCod,"482132");
   strcpy(pICS_TIA->TrmNo,"DVID");
   
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-  /*strcpy(pICS_TIA->TxnSrc,"T0001");*/
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -141,8 +147,6 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
     return ret;
-    
-    
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");
@@ -166,7 +170,7 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
 
   /* STEP1-3: 填上传串的元素值*/
 
-  strcpy(pICS_482132_I->ActTyp,"4");  /*帐号类型*/
+  strcpy(pICS_482132_I->ActTyp,"4");	/*帐号类型*/
 
   getValueOfStr(send_buff,"CDNO", tmpvalue); /*代扣帐号*/
   strcpy(s_CDNO, tmpvalue);
@@ -176,46 +180,46 @@ flog( STEP_LEVEL,"--482132 接收[%s]------------------------------",send_buff);
   strcpy(s_PSWD,tmpvalue);
   strcpy(pICS_482132_I->PinBlk,tmpvalue);
 
-  memset(Trans_Toal_Amount, 0, sizeof(Trans_Toal_Amount));
-  memset(Trans_Toal_Amount2, 0, sizeof(Trans_Toal_Amount2));
-  memset(Reserve_Code, 0, sizeof(Reserve_Code));
-  memset(Product_Name, 0, sizeof(Product_Name));
-  memset(Provide_Name, 0, sizeof(Provide_Name));
-    
-  getValueOfStr(send_buff,"Trans_Toal_Amount", Trans_Toal_Amount); 
-  getValueOfStr(send_buff,"Reserve_Code", Reserve_Code); 
-  getValueOfStr(send_buff,"Product_Name", Product_Name); 
-  getValueOfStr(send_buff,"Provide_Name", Provide_Name); 
-  
-  for(i=0;i<14;i++)
-    {
-    if(i==11)
-      Trans_Toal_Amount2[i]='.';
-    if(i<11)
-      Trans_Toal_Amount2[i]=Trans_Toal_Amount[i+1];
-    if(i>11)
-      Trans_Toal_Amount2[i]=Trans_Toal_Amount[i];
-    }
-  
-  strcpy(pICS_482132_I->TCusNm, Reserve_Code);
-  strcpy(pICS_482132_I->Trans_Amount1, Trans_Toal_Amount2);
-  strcpy(pICS_482132_I->Provide_Name, Provide_Name);
-  strcpy(pICS_482132_I->Product_Name, Product_Name);
-  
-  /* 校验密码 
+	memset(Trans_Toal_Amount, 0, sizeof(Trans_Toal_Amount));
+	memset(Trans_Toal_Amount2, 0, sizeof(Trans_Toal_Amount2));
+	memset(Reserve_Code, 0, sizeof(Reserve_Code));
+	memset(Product_Name, 0, sizeof(Product_Name));
+	memset(Provide_Name, 0, sizeof(Provide_Name));
+	  
+	getValueOfStr(send_buff,"Trans_Toal_Amount", Trans_Toal_Amount); 
+	getValueOfStr(send_buff,"Reserve_Code", Reserve_Code); 
+	getValueOfStr(send_buff,"Product_Name", Product_Name); 
+	getValueOfStr(send_buff,"Provide_Name", Provide_Name); 
+	
+	for(i=0;i<14;i++)
+		{
+		if(i==11)
+			Trans_Toal_Amount2[i]='.';
+		if(i<11)
+			Trans_Toal_Amount2[i]=Trans_Toal_Amount[i+1];
+		if(i>11)
+			Trans_Toal_Amount2[i]=Trans_Toal_Amount[i];
+		}
+	
+	strcpy(pICS_482132_I->TCusNm, Reserve_Code);
+	strcpy(pICS_482132_I->Trans_Amount1, Trans_Toal_Amount2);
+	strcpy(pICS_482132_I->Provide_Name, Provide_Name);
+	strcpy(pICS_482132_I->Product_Name, Product_Name);
+	
+  /* 校验密码 modify by ylw for 异地卡 20120211
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
-    flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
-    sprintf( sErrMsg, "密码校验失败![%d]", ret );
-    goto RETURN;
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
   }
   if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
   {
-    flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
-    goto RETURN;
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
   }
-  */
+*/
   
   /*发往ICS需加8位报文长度*/
   offset=0;
@@ -275,25 +279,25 @@ RETURN:
 
     memcpy(ics_482132n_buff,ics_recv_buff+sizeof(ics_toa_buff),sizeof(ics_482132n_buff));
 
-    memset(TCusNm, 0, sizeof(TCusNm));
-    memset(ThdKey, 0, sizeof(ThdKey));
-    memset(Return_Code, 0, sizeof(Return_Code));
-    memset(PB_Return_Code_Msg, 0, sizeof(PB_Return_Code_Msg));
-    memset(TckNo, 0, sizeof(TckNo));
-    
+		memset(TCusNm, 0, sizeof(TCusNm));
+		memset(ThdKey, 0, sizeof(ThdKey));
+		memset(Return_Code, 0, sizeof(Return_Code));
+		memset(PB_Return_Code_Msg, 0, sizeof(PB_Return_Code_Msg));
+		memset(TckNo, 0, sizeof(TckNo));
+		
     memcpy(TCusNm,pICS_482132_N->TCusNm,sizeof(pICS_482132_N->TCusNm));
     sprintf(tmp_val_str,"定单号码： %s  <br>", TCusNm);
     strcat(display_str,tmp_val_str);
-  
-    memcpy(ThdKey,pICS_482132_N->ThdKey,sizeof(pICS_482132_N->ThdKey));
+	
+		memcpy(ThdKey,pICS_482132_N->ThdKey,sizeof(pICS_482132_N->ThdKey));
     /*sprintf(tmp_val_str,"银行交易流水号： %s  <br>", ThdKey);
     strcat(display_str,tmp_val_str);*/
     
-    memcpy(Return_Code,pICS_482132_N->Return_Code,sizeof(pICS_482132_N->Return_Code));
+		memcpy(Return_Code,pICS_482132_N->Return_Code,sizeof(pICS_482132_N->Return_Code));
     /*sprintf(tmp_val_str,"处理结果： %s  <br>", Return_Code);
     strcat(display_str,tmp_val_str);*/
 
-    memcpy( PB_Return_Code_Msg,pICS_482132_N-> PB_Return_Code_Msg,sizeof(pICS_482132_N-> PB_Return_Code_Msg));
+		memcpy( PB_Return_Code_Msg,pICS_482132_N-> PB_Return_Code_Msg,sizeof(pICS_482132_N-> PB_Return_Code_Msg));
     sprintf(tmp_val_str,"处理结果： %s  <br>",  PB_Return_Code_Msg);
     strcat(display_str,tmp_val_str);
     
@@ -301,7 +305,7 @@ RETURN:
     flog( STEP_LEVEL,"**会计流水[%s]***********", TckNo);
     sprintf(tmp_val_str,"会计流水： %s  <br>", TckNo);
     strcat(display_str,tmp_val_str);
-        
+    		
     strcat(display_str,"<b>交费成功! 请及时查询结果。</b><br>");
 
     setValueOfStr(recv_buff,"display_zone",display_str);

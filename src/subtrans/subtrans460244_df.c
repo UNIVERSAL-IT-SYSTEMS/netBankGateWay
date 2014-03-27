@@ -1,8 +1,4 @@
-/****************************************
- *程序名:trans460244.c
- *功  能:电费缴费前查询
- *日  期:2008-01
- ****************************************/
+
 #include        <stdio.h>
 #include        <stdlib.h>
 #include        <memory.h>
@@ -56,10 +52,9 @@ int ics_proc_460244_df(char *send_buff,char *recv_buff)
   char      sTranNo[16];
   char      sTranDate[11];
   char      sTellerNo[8];
-  char      sTxnCnl[32];
   char      sErrMsg[64];
   char      ics_port[6];
-  
+  char      sTxnCnl[32];
   char      User_status[3];
   char      sStatus[16];
 
@@ -83,7 +78,6 @@ int ics_proc_460244_df(char *send_buff,char *recv_buff)
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
 
-
   pICS_460244_I=(ICS_DEF_460244_I *)ics_460244i_buff;
   pICS_460244_N=(ICS_DEF_460244_N *)ics_460244n_buff;
   pICS_460244_E=(ICS_DEF_460244_E *)ics_460244e_buff;
@@ -100,7 +94,8 @@ int ics_proc_460244_df(char *send_buff,char *recv_buff)
   memset(sErrMsg,'\0',sizeof(sErrMsg));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(sTxnCnl, '\0', sizeof(sTxnCnl)); 
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  
   flog( STEP_LEVEL,"--460244 接收[%s]-------------------------------",send_buff);
 
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
@@ -109,19 +104,25 @@ int ics_proc_460244_df(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->TTxnCd,"460244");
   strcpy(pICS_TIA->FeCod,"460244");
   strcpy(pICS_TIA->TrmNo,"DVID");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+   
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
-  sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
+sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
   sprintf(sTranDate,"%d-%d-%d",my_tm->tm_year+1900,my_tm->tm_mon+1,my_tm->tm_mday);
 
 
   strcpy(pICS_TIA->NodTrc,sTranNo);
-  
-  
-  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
@@ -269,9 +270,9 @@ int ics_proc_460244_df(char *send_buff,char *recv_buff)
   {  /*失败*/
     memcpy(pICS_460244_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_460244_E));
     
-    memset(tmp_val_str,'\0',sizeof(tmp_val_str));   /*置空了*/
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
     memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));
-    setValueOfStr(recv_buff,"MGID",tmp_val_str); /*返回码*/ 
+    setValueOfStr(recv_buff,"MGID",tmp_val_str);/*返回码*/
 
     memset(tmp_val_str,'\0',sizeof(tmp_val_str));
     memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));

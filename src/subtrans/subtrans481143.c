@@ -62,7 +62,7 @@ int ics_proc_481143(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-
+  char      sTxnCnl[32];
 	
   time_t    cur_time;
 
@@ -113,7 +113,6 @@ flog( STEP_LEVEL,"--481143 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"481143");
   strcpy(pICS_TIA->FeCod,"481143");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -145,6 +144,17 @@ flog( STEP_LEVEL,"--481143 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil," ");
+
+
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   /* STEP1-3: 填上传串的元素值*/
   getValueOfStr(send_buff,"TxnDat", tmpvalue); /*日期*/

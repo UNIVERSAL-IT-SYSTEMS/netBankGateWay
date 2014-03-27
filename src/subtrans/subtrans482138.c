@@ -52,8 +52,8 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   char      tmpvalue[256];  /*从上传报文中取得的某项值*/
   char      ics_482138o_buff[4096];
 
-  char      s_CDNO[LEN_CDNO]; /* 卡号 */
-  char      s_PSWD[21]; /* 密码 */
+  char			s_CDNO[LEN_CDNO]; /* 卡号 */
+  char			s_PSWD[21]; /* 密码 */
   
   char      sLen[8];
   char      sLeft[14];
@@ -64,13 +64,13 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   char      sErrMsg[64];
   char      PB_Return_Code_Msg[64];
   char      ics_port[6];
-  char      sTxnCnl[32];
-  char      sSTxnAmt[32];
-  char      sTCusNm[32];
-  char      sLoSeq[32];
+
+  char			sSTxnAmt[32];
+  char			sTCusNm[32];
+  char			sLoSeq[32];
   char      sCarType[32];
   char      sCarNo[32];
-
+  char      sTxnCnl[32];
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -93,8 +93,7 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
   memset(ics_482138o_buff, 0, sizeof(ics_482138o_buff));
-	memset(sTxnCnl, 0, sizeof(sTxnCnl));
-	
+
   pICS_482138_I=(ICS_DEF_482138_I *)ics_482138i_buff;
   pICS_482138_N=(ICS_DEF_482138_N *)ics_482138n_buff;
   pICS_482138_E=(ICS_DEF_482138_E *)ics_482138e_buff;
@@ -114,13 +113,23 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   memset( PB_Return_Code_Msg, '\0', sizeof( PB_Return_Code_Msg ) ) ;
   
   memset(s_CDNO, '\0', sizeof(s_CDNO));
-  memset(s_PSWD, '\0', sizeof(s_PSWD));
+	memset(s_PSWD, '\0', sizeof(s_PSWD));
 
   flog( STEP_LEVEL,"--482138 接收[%s]------------------------------",send_buff);
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");
-  strcpy(pICS_TIA->TTxnCd,"482138");
+	strcpy(pICS_TIA->TTxnCd,"482138");
   strcpy(pICS_TIA->FeCod,"482138");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
@@ -132,13 +141,9 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
 
   strcpy(pICS_TIA->NodTrc,sTranNo);
 
-  ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
+
   if (ret != RETURN_OK)
   return ret;
-  
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");
@@ -159,17 +164,17 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil," ");
-  
-  flog( STEP_LEVEL,"TO ics_tia_buff: [%s]",ics_tia_buff);
-  /* strcpy(pICS_482138_I->sign_flag,"3");签约类型 1：手工签约 2：电话签约 3：网上签约 */
+	
+	flog( STEP_LEVEL,"TO ics_tia_buff: [%s]",ics_tia_buff);
+	/* strcpy(pICS_482138_I->sign_flag,"3");签约类型 1：手工签约 2：电话签约 3：网上签约 */
   memset(tmpvalue,'\0',sizeof(tmpvalue));
   getValueOfStr(send_buff,"sign_flag",tmpvalue); /*签约类型 1：手工签约 2：电话签约 3：网上签约 4:手机银行*/
   strcpy(pICS_482138_I->sign_flag,tmpvalue);
-  strcpy(pICS_482138_I->inst_no,"交通银行");/*签约机构 */
-  strcpy(pICS_482138_I->live_flag,"1");/*激活标志 0-激活 1-未激活 */
-  strcpy(pICS_482138_I->tran_flag,"1");/*交易标志 0-允许交易 1-不允许交易 */
-  
-  /*memset(tmpvalue,'\0',sizeof(tmpvalue));
+	strcpy(pICS_482138_I->inst_no,"交通银行");/*签约机构 */
+	strcpy(pICS_482138_I->live_flag,"1");/*激活标志 0-激活 1-未激活 */
+	strcpy(pICS_482138_I->tran_flag,"1");/*交易标志 0-允许交易 1-不允许交易 */
+	
+	/*memset(tmpvalue,'\0',sizeof(tmpvalue));
   getValueOfStr(send_buff,"acc_type",tmpvalue);*/ /*扣款方式 1:预扣款用户 0:实时扣款用户 */
   strcpy(pICS_482138_I->acc_type,"0");
     
@@ -240,23 +245,23 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   memset(tmpvalue,'\0',sizeof(tmpvalue));
   getValueOfStr(send_buff,"PSWD",tmpvalue); /*密码*/
   strcpy(s_PSWD,tmpvalue);
-  
-  /* 校验密码 
+  strcpy(pICS_482138_I->PinBlk,tmpvalue);
+
+  /* 校验密码 modify by ylw 20120211 for 异地卡
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
-    flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
                 strcpy(pICS_TOA->RspCod,"999460");
-    sprintf( sErrMsg, "密码校验失败![%d]", ret );
-    goto RETURN;
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
   }
   if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
   {
-    flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
-    goto RETURN;
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
   } 
-  */
-  
+*/
   /*发往ICS需加8位报文长度*/
   offset=0;
   offset=offset+8;
@@ -276,8 +281,8 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   len=sizeof(ICS_DEF_482138_I);
   for(i=0;i<len;i++)
   {
-    if(ics_482138i_buff[i]==0)
-       ics_482138i_buff[i]=' ';
+  	if(ics_482138i_buff[i]==0)
+   		ics_482138i_buff[i]=' ';
   }
   flog( STEP_LEVEL,"TO ics_482138i_buff: [%s]",ics_482138i_buff);
   memcpy(ics_send_buff+offset, ics_482138i_buff, len);
@@ -298,7 +303,7 @@ int ics_proc_482138(char *send_buff,char *recv_buff)
   if (ret != RETURN_OK)
         return ret;
 
-  flog( STEP_LEVEL,"TO ICS_PORT: [%s]",ics_send_buff);
+	flog( STEP_LEVEL,"TO ICS_PORT: [%s]",ics_send_buff);
   flog( STEP_LEVEL,"TO ICS: [%s]",ics_send_buff);
 
   ret=clientics( ics_send_buff, ics_recv_buff, atoi(ics_port) );
@@ -320,7 +325,7 @@ RETURN:
 
       memcpy(ics_482138n_buff,ics_recv_buff+sizeof(ics_toa_buff),sizeof(ics_482138n_buff));
 
-      memcpy(ics_482138o_buff, ics_recv_buff+sizeof(ics_toa_buff)+sizeof(ics_482138n_buff),  sizeof(ics_recv_buff)-sizeof(ics_toa_buff)-sizeof(ics_482138n_buff));
+			memcpy(ics_482138o_buff, ics_recv_buff+sizeof(ics_toa_buff)+sizeof(ics_482138n_buff),  sizeof(ics_recv_buff)-sizeof(ics_toa_buff)-sizeof(ics_482138n_buff));
       
       setValueOfStr(recv_buff,"display_zone","");
       

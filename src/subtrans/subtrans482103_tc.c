@@ -84,7 +84,7 @@ int ics_proc_482103_tc(char *send_buff,char *recv_buff)
   memset(display_str,'\0',sizeof(display_str));
   memset(tmpvalue,'\0',sizeof(tmpvalue));
   memset(sTranNo,'\0',sizeof(sTranNo));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sTranDate,'\0',sizeof(sTranDate));
   
@@ -97,9 +97,17 @@ flog( STEP_LEVEL,"--482103 接收[%s]-------------------------------",send_buff);
   strcpy(pICS_TIA->FeCod,"482103");
   strcpy(pICS_TIA->TrmNo,"DVID");
 
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+  
+  
   time(&cur_time);
   my_tm = localtime(&cur_time);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);

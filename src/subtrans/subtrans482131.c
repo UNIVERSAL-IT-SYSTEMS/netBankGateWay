@@ -60,7 +60,6 @@ int ics_proc_482131(char *send_buff,char *recv_buff)
   char      sErrMsg[64];
   char      ics_port[6];
   char      sTxnCnl[32];
-
 	char  Reserve_Code[13];							/*服务商*/	
 	char  Product_Name[201];      			/*预定内容*/
 	char  Provide_Name[31];      				/*服务商*/
@@ -108,8 +107,7 @@ int ics_proc_482131(char *send_buff,char *recv_buff)
   memset(sErrMsg,'\0',sizeof(sErrMsg));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
-  
+
   flog( STEP_LEVEL,"--482131 接收[%s]------------------------------",send_buff);
 
   /* STEP1-2:填上传串的固定头 */
@@ -118,10 +116,18 @@ int ics_proc_482131(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"482131");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
-  
-  
 
+
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+  
   time(&cur_time);
   my_tm = localtime(&cur_time);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
@@ -132,9 +138,6 @@ int ics_proc_482131(char *send_buff,char *recv_buff)
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
   return ret;
-  
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");
@@ -161,8 +164,6 @@ int ics_proc_482131(char *send_buff,char *recv_buff)
   trim(Reserve_Code);
   getValueOfStr(send_buff,"Reserve_Code", Reserve_Code);   /* 定单号 */
   strcpy(pICS_482131_I->Reserve_Code, Reserve_Code);
-
-
 
 
   /*发往ICS需加8位报文长度*/

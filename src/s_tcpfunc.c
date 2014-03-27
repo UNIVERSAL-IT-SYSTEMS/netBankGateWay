@@ -116,7 +116,7 @@ short	ri_tcpread(pi_sock, ps_str, pi_num, pi_timeout)
 	while (ileft > 0) 
 	{
 		iread = read(pi_sock, ps_str, ileft);
-
+		flog ( YBSLOG, "read sock[%ld] len:%d", pi_sock, iread);
 		if(iread < 0 )
 			return(iread);
 

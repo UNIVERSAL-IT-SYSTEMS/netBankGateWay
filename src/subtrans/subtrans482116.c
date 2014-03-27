@@ -51,8 +51,8 @@ int ics_proc_482116(char *send_buff,char *recv_buff)
   char      display_log_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[256];  /*从上传报文中取得的某项值*/
   
-  char      s_CDNO[LEN_CDNO]; /* 卡号 */
-  char      s_PSWD[21]; /* 密码 */
+  char			s_CDNO[LEN_CDNO]; /* 卡号 */
+  char			s_PSWD[21]; /* 密码 */
   
   char      sLen[8];
   char      sLeft[14];
@@ -63,11 +63,11 @@ int ics_proc_482116(char *send_buff,char *recv_buff)
   char      sErrMsg[64];
   char      ics_port[6];
 
-  char      sCarType[32];
-  char       sCar[32];
-  char       sTCusNm[32];
-  char       sTxnCnl[32];
-  
+	char      sCarType[32];
+	char 			sCar[32];
+	char 			sTCusNm[32];
+	char 			sTxnCnl[32];
+	
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -106,13 +106,13 @@ int ics_proc_482116(char *send_buff,char *recv_buff)
   memset(sTranDate,'\0',sizeof(sTranDate));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(s_CDNO, '\0', sizeof(s_CDNO));
-  memset(s_PSWD, '\0', sizeof(s_PSWD));
+	memset(s_CDNO, '\0', sizeof(s_CDNO));
+	memset(s_PSWD, '\0', sizeof(s_PSWD));
 
-  memset(sCarType, 0, sizeof(sCarType));
-  memset(sCar, 0, sizeof(sCar));
-  memset(sTCusNm, 0, sizeof(sTCusNm));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+	memset(sCarType, 0, sizeof(sCarType));
+	memset(sCar, 0, sizeof(sCar));
+	memset(sTCusNm, 0, sizeof(sTCusNm));
+	memset(sTxnCnl, '\0', sizeof(sTxnCnl));
 
 flog( STEP_LEVEL,"--482116 接收[%s]------------------------------",send_buff);
 
@@ -121,10 +121,16 @@ flog( STEP_LEVEL,"--482116 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482116");
   strcpy(pICS_TIA->FeCod,"482116");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-  /*strcpy(pICS_TIA->TxnSrc,"T0001");*/
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -171,9 +177,9 @@ flog( STEP_LEVEL,"--482116 接收[%s]------------------------------",send_buff);
   strcat(tmp_val_str2, tmpvalue);
   strcpy(pICS_482116_I->TxnAmt,tmp_val_str2);
   
-  strcpy(pICS_482116_I->ActTyp,"4");  /*帐号类型*/
+  strcpy(pICS_482116_I->ActTyp,"4");	/*帐号类型*/
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"CDNO", tmpvalue); /*代扣帐号*/
   strcpy(s_CDNO, tmpvalue);
   strcpy(pICS_482116_I->ActNo, tmpvalue);
@@ -183,17 +189,17 @@ flog( STEP_LEVEL,"--482116 接收[%s]------------------------------",send_buff);
   strcpy(pICS_482116_I->CarTyp, tmpvalue);
   strcpy(sCarType, tmpvalue);
  if(strcmp(sCarType,"A1")==0)
-     strcpy(sCar,"大型汽车");
+  	 strcpy(sCar,"大型汽车");
   if(strcmp(sCarType,"A2")==0)
-     strcpy(sCar,"小型汽车");
+  	 strcpy(sCar,"小型汽车");
   if(strcmp(sCarType,"A5")==0)
-     strcpy(sCar,"挂车");
+  	 strcpy(sCar,"挂车");
   if(strcmp(sCarType,"A6")==0)
-     strcpy(sCar,"拖拉机");
+  	 strcpy(sCar,"拖拉机");
   if(strcmp(sCarType,"A7")==0)
-     strcpy(sCar,"农用运输车");
+  	 strcpy(sCar,"农用运输车");
   if(strcmp(sCarType,"C1")==0)
-     strcpy(sCar,"外籍汽车");
+  	 strcpy(sCar,"外籍汽车");
 
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"CarNo", tmpvalue); /* 车牌序列号  */
@@ -215,21 +221,20 @@ flog( STEP_LEVEL,"--482116 接收[%s]------------------------------",send_buff);
   strcpy(s_PSWD,tmpvalue);
   strcpy(pICS_482116_I->PinBlk,tmpvalue);
 
-  /* 校验密码 
+  /* 校验密码 modify by ylw for 异地卡 20120211
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
-    flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
-    sprintf( sErrMsg, "密码校验失败![%d]", ret );
-    goto RETURN;
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
   }
   if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
   {
-    flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
-    goto RETURN;
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
   }
-  */
-  
+ */ 
   /*发往ICS需加8位报文长度*/
   offset=0;
   offset=offset+8;
@@ -288,7 +293,7 @@ RETURN:
 
     memcpy(ics_482116n_buff,ics_recv_buff+sizeof(ics_toa_buff),sizeof(ics_482116n_buff));
 
-    sprintf(tmp_val_str,"<table><tr><td>车辆类型： </td><td>%s  </td></tr>", sCar);
+		sprintf(tmp_val_str,"<table><tr><td>车辆类型： </td><td>%s  </td></tr>", sCar);
     strcat(display_str,tmp_val_str);
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
@@ -315,7 +320,7 @@ RETURN:
     sprintf(tmp_val_str,"<tr><td>会计流水： </td><td>%s  </td></tr></table>", tmp_val_str2);
     strcat(display_str,tmp_val_str);
 
-    sprintf(tmp_val_str,"温馨提示： %s  ", "我行与地税系统实时联网，您在本机成功缴税后，即可办理年审。如您需要完税凭证，可24小时后通过市内交费易多媒体终端“客户服务”完成补打，也可通过交费易POS终端完成补打，交费易咨询电话38883320!<br>");
+		sprintf(tmp_val_str,"温馨提示： %s  ", "我行与地税系统实时联网，您在本机成功缴税后，即可办理年审。如您需要完税凭证，可24小时后通过市内交费易多媒体终端“客户服务”完成补打，也可通过交费易POS终端完成补打，交费易咨询电话38883320!<br>");
     strcat(display_str,tmp_val_str);
 
     strcat(display_str,"<b>交费成功! 请及时查询结果。</b><br>");

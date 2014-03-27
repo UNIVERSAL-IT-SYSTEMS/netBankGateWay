@@ -51,10 +51,10 @@ int ics_proc_482173(char *send_buff,char *recv_buff)
   char      display_log_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[256];  /*从上传报文中取得的某项值*/
   
-  char      s_CDNO[LEN_CDNO]; /* 卡号 */
-  char      s_PSWD[21]; /* 密码 */
-  char      sTxnAmt[15];/*金额*/
-  char       sphone[20];/*手机号码*/
+  char			s_CDNO[LEN_CDNO]; /* 卡号 */
+  char			s_PSWD[21]; /* 密码 */
+	char      sTxnAmt[15];/*金额*/
+	char 			sphone[20];/*手机号码*/
   
   char      sLen[8];
   char      sLeft[14];
@@ -62,9 +62,9 @@ int ics_proc_482173(char *send_buff,char *recv_buff)
   char      sTranNo[16];
   char      sTranDate[11];
   char      sTellerNo[8];
-  char      sTxnCnl[32];
   char      sErrMsg[64];
   char      ics_port[6];
+  char      sTxnCnl[32];
 
   time_t    cur_time;
 
@@ -104,12 +104,11 @@ int ics_proc_482173(char *send_buff,char *recv_buff)
   memset(sTranDate,'\0',sizeof(sTranDate));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(s_CDNO, '\0', sizeof(s_CDNO));
-  memset(s_PSWD, '\0', sizeof(s_PSWD));
-  memset(sTxnAmt, '\0', sizeof(sTxnAmt));
-  memset(sphone, '\0', sizeof(sphone));
-  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
-  
+	memset(s_CDNO, '\0', sizeof(s_CDNO));
+	memset(s_PSWD, '\0', sizeof(s_PSWD));
+	memset(sTxnAmt, '\0', sizeof(sTxnAmt));
+	memset(sphone, '\0', sizeof(sphone));
+
 flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
 
   /* STEP1-2:填上传串的固定头 */
@@ -117,7 +116,6 @@ flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482173");
   strcpy(pICS_TIA->FeCod,"482173");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"WE441");
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -149,21 +147,25 @@ flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil," ");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   /* STEP1-3: 填上传串的元素值*/
-  
-  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-  
-  
   getValueOfStr(send_buff,"CTSQ", sphone);   /* 手机号码 */
   strcpy(pICS_482173_I->user_number, sphone);
   getValueOfStr(send_buff,"AMT1", sTxnAmt); /*交易金额*/
   strcpy(pICS_482173_I->TxnAmt,sTxnAmt);
-  strcpy(pICS_482173_I->ActTyp,"4");  /*帐号类型*/
-  
-  getValueOfStr(send_buff,"CDNO", tmpvalue); /*代扣帐号*/
+  strcpy(pICS_482173_I->ActTyp,"4");	/*帐号类型*/
+	
+	getValueOfStr(send_buff,"CDNO", tmpvalue); /*代扣帐号*/
   strcpy(s_CDNO, tmpvalue);
   strcpy(pICS_482173_I->ActNo, tmpvalue);
 
@@ -171,21 +173,20 @@ flog( STEP_LEVEL,"--482173 接收[%s]------------------------------",send_buff);
   strcpy(s_PSWD,tmpvalue);
   strcpy(pICS_482173_I->PinBlk,tmpvalue);
 
-  /* 校验密码  
+  /* 校验密码 modify by ylw for 异地卡 20120211  
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
-    flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
-    sprintf( sErrMsg, "密码校验失败![%d]", ret );
-    goto RETURN;
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
   }
   if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
   {
-    flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
-    goto RETURN;
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
   }
-  */ 
-  
+*/
   /*发往ICS需加8位报文长度*/
   offset=0;
   offset=offset+8;
@@ -246,7 +247,7 @@ RETURN:
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
     memcpy(tmp_val_str2,pICS_482173_I->user_number,sizeof(pICS_482173_I->user_number));
-    sprintf(tmp_val_str,"手机号码： %s  <br>", tmp_val_str2);
+    sprintf(tmp_val_str,"充值手机号： %s  <br>", tmp_val_str2);
     strcat(display_str,tmp_val_str);
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
@@ -255,7 +256,7 @@ RETURN:
     memset(sRight,0,sizeof(sRight));
     memcpy(sLeft,tmp_val_str2,13);
     memcpy(sRight,tmp_val_str2+13,2);
-    sprintf(tmp_val_str,"缴费金额： %d.%s  <br>",atoi(sLeft),sRight);
+    sprintf(tmp_val_str,"充值金额： %d.%s  <br>",atoi(sLeft),sRight);
     strcat(display_str,tmp_val_str);
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
@@ -268,7 +269,7 @@ RETURN:
     /* STEP3-1-1 在日志中记录有关数据备查 begin*/
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
     memcpy(tmp_val_str2,pICS_482173_I->user_number,sizeof(pICS_482173_I->user_number));
-    sprintf(tmp_val_str,"手机号码：[%s] ",tmp_val_str2);
+    sprintf(tmp_val_str,"充值手机号[%s] ",tmp_val_str2);
     strcat(display_log_str,tmp_val_str);
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
@@ -278,7 +279,7 @@ RETURN:
 
     memset(tmp_val_str2,0,sizeof(tmp_val_str2));
     memcpy(tmp_val_str2,pICS_482173_N->RcvAmt,sizeof(pICS_482173_N->RcvAmt));
-    sprintf(tmp_val_str,"交费金额：[%s] ",tmp_val_str2);
+    sprintf(tmp_val_str,"充值金额：[%s] ",tmp_val_str2);
     strcat(display_log_str,tmp_val_str);
 
     setValueOfStr(recv_buff,"display_zone",display_str);

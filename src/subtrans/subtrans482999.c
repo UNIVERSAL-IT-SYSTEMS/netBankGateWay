@@ -59,7 +59,7 @@ int ics_proc_482999(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-
+  char      sTxnCnl[32];
 	char  Reserve_Code[13];							/*服务商*/	
 	char  Product_Name[201];      			/*预定内容*/
 	char  Provide_Name[31];      				/*服务商*/
@@ -116,7 +116,16 @@ int ics_proc_482999(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"482999");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);

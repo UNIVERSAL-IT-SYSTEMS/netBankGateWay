@@ -52,6 +52,7 @@ int ics_proc_482149(char *send_buff,char *recv_buff)
   char    tmpvalue[256];  /*从上传报文中取得的某项值*/
   
   char		s_CDNO[LEN_CDNO]; /* 卡号 */
+  char		s_PSWD[21]; /* 密码 */
   
   char    sLen[8];
   char    sLeft[14];
@@ -72,7 +73,7 @@ int ics_proc_482149(char *send_buff,char *recv_buff)
 	char  ThdKey[19];        						/*银行交易流水号*/
 	char  Return_Code[4];       				/*处理结果*/
 	char  PB_Return_Code_Msg[31];       /*处理结果信息*/
-		
+	char      sTxnCnl[32];	
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -119,8 +120,19 @@ flog( STEP_LEVEL,"--482149 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482149");
   strcpy(pICS_TIA->FeCod,"482149");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
 
+
+
+	/*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+  
   time(&cur_time);
   my_tm = localtime(&cur_time);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
@@ -169,6 +181,21 @@ flog( STEP_LEVEL,"--482149 接收[%s]------------------------------",send_buff);
 			Trans_Toal_Amount2[i]=Trans_Toal_Amount[i];
 		}
 	
+  /* 校验密码 
+  ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
+  if ( ret < 0 )
+  {
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
+  }
+  if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
+  {
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
+  }
+*/
+  
   /*发往ICS需加8位报文长度*/
   offset=0;
   offset=offset+8;

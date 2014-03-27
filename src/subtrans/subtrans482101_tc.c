@@ -39,9 +39,9 @@ int ics_proc_482101_tc(char *send_buff,char *recv_buff)
 
   char      ics_send_buff[LEN_ICS_PROC_BUF];
   char      ics_recv_buff[LEN_ICS_PROC_BUF];
-  char      ics_482101i_buff[38];
-  char      ics_482101n_buff[118];
-  char      ics_482101e_buff[75];
+  char      ics_482101i_buff[215];
+  char      ics_482101n_buff[279];
+  char      ics_482101e_buff[69];
 
   char      ics_tia_buff[171];
   char      ics_toa_buff[114];
@@ -154,6 +154,8 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   trim(tmpvalue);
   strcpy(s_PSWD,tmpvalue);
 
+  strcpy(pICS_482101_I->PinBlk,tmpvalue);
+
 	memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"TxnAmt",tmpvalue); /*交易金额      */
   strcpy(pICS_482101_I->TxnAmt,tmpvalue);
@@ -194,6 +196,7 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
 	memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"CntTel",tmpvalue); /*手机号码      */
   strcpy(pICS_482101_I->CntTel,tmpvalue);
+
 
   /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
   len=sizeof(ICS_DEF_TIA);

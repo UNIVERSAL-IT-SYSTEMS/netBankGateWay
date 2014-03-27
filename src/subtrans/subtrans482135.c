@@ -51,8 +51,8 @@ int ics_proc_482135(char *send_buff,char *recv_buff)
   char      display_log_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[256];  /*从上传报文中取得的某项值*/
 
-  char      s_CDNO[LEN_CDNO]; /* 卡号 */
-  char      s_PSWD[21]; /* 密码 */
+  char			s_CDNO[LEN_CDNO]; /* 卡号 */
+  char			s_PSWD[21]; /* 密码 */
 
   char      sLen[8];
   char      sLeft[14];
@@ -63,27 +63,27 @@ int ics_proc_482135(char *send_buff,char *recv_buff)
   char      sErrMsg[64];
   char      ics_port[6];
 
-  char  Product_Code[13];         /*门票代码*/
-  char  Retail_Price1[15];         /*门市价*/
-  char  E_Discount_Price1[15];     /*电子优惠价*/
-  char  Reserve_Amoun[5];         /*预订产品数量*/
-  char  Mobile_Phone_Number[12];  /*手机号码*/
-  char  Begin_Date[9];            /*使用日期*/
-  char  Message_Type[3];          /*短信类型*/
-  char  Amount1[15];              /*总金额*/
-  char  Scence_Code[13];           /*景区代码*/
-  char  Scence_Name[61];           /*景区名称*/
-  char  Product_Name[51];         /*门票名称*/
+	char  Product_Code[13]; 			  /*门票代码*/
+	char  Retail_Price1[15]; 			  /*门市价*/
+	char  E_Discount_Price1[15]; 	  /*电子优惠价*/
+	char  Reserve_Amoun[5];         /*预订产品数量*/
+	char  Mobile_Phone_Number[12];  /*手机号码*/
+	char  Begin_Date[9];            /*使用日期*/
+	char  Message_Type[3];          /*短信类型*/
+	char  Amount1[15];              /*总金额*/
+	char  Scence_Code[13];         	/*景区代码*/
+	char  Scence_Name[61];         	/*景区名称*/
+	char  Product_Name[51];         /*门票名称*/
   char  Remark1[161];             /*备注*/
-  char  Valid_Days[4];            /*有效天数*/
+	char  Valid_Days[4];            /*有效天数*/
 
-  char  TCUSNM[13];               /*订单编号*/
-  char  ThdKey[19];               /*银行交易流水号*/
-  char  TXNAMT[15];               /**/
-  char  Return_Code[4];           /*处理结果*/
-  char  PB_Return_Code_Msg[31];   /*处理结果信息*/
-  char  TckNo[12];                /*会计流水*/
-  char  sTxnCnl[32];
+	char  TCUSNM[13];               /*订单编号*/
+	char  ThdKey[19];               /*银行交易流水号*/
+	char  TXNAMT[15];               /**/
+	char  Return_Code[4];           /*处理结果*/
+	char  PB_Return_Code_Msg[31];   /*处理结果信息*/
+	char  TckNo[12];                /*会计流水*/
+	char 	sTxnCnl[32];
 
   time_t    cur_time;
 
@@ -123,9 +123,9 @@ int ics_proc_482135(char *send_buff,char *recv_buff)
   memset(sTranDate,'\0',sizeof(sTranDate));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(s_CDNO, '\0', sizeof(s_CDNO));
-  memset(s_PSWD, '\0', sizeof(s_PSWD));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+	memset(s_CDNO, '\0', sizeof(s_CDNO));
+	memset(s_PSWD, '\0', sizeof(s_PSWD));
+	memset(sTxnCnl, '\0', sizeof(sTxnCnl));
 
 flog( STEP_LEVEL,"--482135 接收[%s]------------------------------",send_buff);
 
@@ -134,10 +134,16 @@ flog( STEP_LEVEL,"--482135 接收[%s]------------------------------",send_buff);
   strcpy(pICS_TIA->TTxnCd,"482135");
   strcpy(pICS_TIA->FeCod,"482135");
   strcpy(pICS_TIA->TrmNo,"DVID");
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-  /*strcpy(pICS_TIA->TxnSrc,"T0001");*/
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -172,112 +178,112 @@ flog( STEP_LEVEL,"--482135 接收[%s]------------------------------",send_buff);
 
   /* STEP1-3: 填上传串的元素值*/
 
-  strcpy(pICS_482135_I->ActTyp,"4");  /*帐号类型*/
+  strcpy(pICS_482135_I->ActTyp,"4");	/*帐号类型*/
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"CDNO", tmpvalue); /*代扣帐号*/
   trim(tmpvalue);
   strcpy(s_CDNO, tmpvalue);
   strcpy(pICS_482135_I->ActNo, tmpvalue);
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"PSWD",tmpvalue); /*密码*/
   trim(tmpvalue);
   strcpy(s_PSWD,tmpvalue);
   strcpy(pICS_482135_I->PinBlk,tmpvalue);
 
-  memset(Product_Code, 0, sizeof(Product_Code));
-  memset(Retail_Price1, 0, sizeof(Retail_Price1));
-  memset(E_Discount_Price1, 0, sizeof(E_Discount_Price1));
-  memset(Reserve_Amoun, 0, sizeof(Reserve_Amoun));
-  memset(Mobile_Phone_Number, 0, sizeof(Mobile_Phone_Number));
-  memset(Begin_Date, 0, sizeof(Begin_Date));
-  memset(Message_Type, 0, sizeof(Message_Type));
-  memset(Amount1, 0, sizeof(Amount1));
-  memset(Scence_Code, 0, sizeof(Scence_Code));
-  memset(Scence_Name, 0, sizeof(Scence_Name));
-  memset(Product_Name, 0, sizeof(Product_Name));
-  memset(Remark1, 0, sizeof(Remark1));
-  memset(Valid_Days, 0, sizeof(Valid_Days));
+	memset(Product_Code, 0, sizeof(Product_Code));
+	memset(Retail_Price1, 0, sizeof(Retail_Price1));
+	memset(E_Discount_Price1, 0, sizeof(E_Discount_Price1));
+	memset(Reserve_Amoun, 0, sizeof(Reserve_Amoun));
+	memset(Mobile_Phone_Number, 0, sizeof(Mobile_Phone_Number));
+	memset(Begin_Date, 0, sizeof(Begin_Date));
+	memset(Message_Type, 0, sizeof(Message_Type));
+	memset(Amount1, 0, sizeof(Amount1));
+	memset(Scence_Code, 0, sizeof(Scence_Code));
+	memset(Scence_Name, 0, sizeof(Scence_Name));
+	memset(Product_Name, 0, sizeof(Product_Name));
+	memset(Remark1, 0, sizeof(Remark1));
+	memset(Valid_Days, 0, sizeof(Valid_Days));
 
-  getValueOfStr(send_buff,"Product_Code", Product_Code);
+	getValueOfStr(send_buff,"Product_Code", Product_Code);
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
-  getValueOfStr(send_buff,"Retail_Price1", tmpvalue);
-  sprintf(Retail_Price1, "%14.2f", atof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
+	getValueOfStr(send_buff,"Retail_Price1", tmpvalue);
+	sprintf(Retail_Price1, "%14.2f", atof(tmpvalue));
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
-  getValueOfStr(send_buff,"E_Discount_Price1", tmpvalue);
-  sprintf(E_Discount_Price1, "%014.2f", atof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
+	getValueOfStr(send_buff,"E_Discount_Price1", tmpvalue);
+	sprintf(E_Discount_Price1, "%014.2f", atof(tmpvalue));
 
-  getValueOfStr(send_buff,"Reserve_Amoun", Reserve_Amoun);
-  getValueOfStr(send_buff,"Mobile_Phone_Number", Mobile_Phone_Number);
+	getValueOfStr(send_buff,"Reserve_Amoun", Reserve_Amoun);
+	getValueOfStr(send_buff,"Mobile_Phone_Number", Mobile_Phone_Number);
 
-  memset(tmpvalue, 0, sizeof(tmpvalue));
-  getValueOfStr(send_buff,"Begin_Date", tmpvalue);
-  strncpy(Begin_Date, tmpvalue, 4);
-  if(strlen(tmpvalue) == 10){
-    strncpy(Begin_Date+4, tmpvalue+5, 2);
-    strncpy(Begin_Date+6, tmpvalue+8, 2);
-  }else{
-    if(tmpvalue[6] == '-'){
-      Begin_Date[4] = '0';
-      Begin_Date[5] = tmpvalue[5];
-      if(strlen(tmpvalue) == 9){
-        strncpy(Begin_Date+6, tmpvalue+7, 2);
-      }else{
-        Begin_Date[6] = '0';
-        Begin_Date[7] = tmpvalue[7];      
-      }
-    }else{
-      strncpy(Begin_Date+4, tmpvalue+5, 2);
-    }
-    if(tmpvalue[7] == '-'){
-      Begin_Date[6] = '0';
-      Begin_Date[7] = tmpvalue[8];
-    }
-  }
-  getValueOfStr(send_buff,"Message_Type", Message_Type);
-  
-  memset(tmpvalue, 0, sizeof(tmpvalue));
-  getValueOfStr(send_buff,"Amount1", tmpvalue);
-  sprintf(Amount1, "%014.2f", atof(tmpvalue));
+	memset(tmpvalue, 0, sizeof(tmpvalue));
+	getValueOfStr(send_buff,"Begin_Date", tmpvalue);
+	strncpy(Begin_Date, tmpvalue, 4);
+	if(strlen(tmpvalue) == 10){
+		strncpy(Begin_Date+4, tmpvalue+5, 2);
+		strncpy(Begin_Date+6, tmpvalue+8, 2);
+	}else{
+		if(tmpvalue[6] == '-'){
+			Begin_Date[4] = '0';
+			Begin_Date[5] = tmpvalue[5];
+			if(strlen(tmpvalue) == 9){
+				strncpy(Begin_Date+6, tmpvalue+7, 2);
+			}else{
+				Begin_Date[6] = '0';
+				Begin_Date[7] = tmpvalue[7];			
+			}
+		}else{
+			strncpy(Begin_Date+4, tmpvalue+5, 2);
+		}
+	  if(tmpvalue[7] == '-'){
+			Begin_Date[6] = '0';
+			Begin_Date[7] = tmpvalue[8];
+	  }
+	}
+	getValueOfStr(send_buff,"Message_Type", Message_Type);
+	
+	memset(tmpvalue, 0, sizeof(tmpvalue));
+	getValueOfStr(send_buff,"Amount1", tmpvalue);
+	sprintf(Amount1, "%014.2f", atof(tmpvalue));
 
-  getValueOfStr(send_buff,"Scence_Code", Scence_Code);
-  getValueOfStr(send_buff,"Scence_Name", Scence_Name);
-  getValueOfStr(send_buff,"Product_Name", Product_Name);
-  getValueOfStr(send_buff,"Remark1", Remark1);
-  getValueOfStr(send_buff,"Valid_Days", Valid_Days);
+	getValueOfStr(send_buff,"Scence_Code", Scence_Code);
+	getValueOfStr(send_buff,"Scence_Name", Scence_Name);
+	getValueOfStr(send_buff,"Product_Name", Product_Name);
+	getValueOfStr(send_buff,"Remark1", Remark1);
+	getValueOfStr(send_buff,"Valid_Days", Valid_Days);
 
-  memcpy(pICS_482135_I->Product_Code, Product_Code, 12);
-  memcpy(pICS_482135_I->Retail_Price1, Retail_Price1, 14);
-  memcpy(pICS_482135_I->E_Discount_Price1, E_Discount_Price1, 14);
-  memcpy(pICS_482135_I->Reserve_Amoun, Reserve_Amoun, 4);
-  memcpy(pICS_482135_I->Mobile_Phone_Number, Mobile_Phone_Number, 11);
-  memcpy(pICS_482135_I->Begin_Date, Begin_Date, 8);
-  memcpy(pICS_482135_I->Message_Type, Message_Type, 2);
-  memcpy(pICS_482135_I->Amount1, Amount1, 14);
-  memcpy(pICS_482135_I->Scence_Code, Scence_Code, 12);
-  memcpy(pICS_482135_I->Scence_Name, Scence_Name, 60);
-  memcpy(pICS_482135_I->Product_Name, Product_Name, 50);
-  memcpy(pICS_482135_I->Remark1, Remark1, 160);
-  memcpy(pICS_482135_I->Valid_Days, Valid_Days, 3);
+	memcpy(pICS_482135_I->Product_Code, Product_Code, 12);
+	memcpy(pICS_482135_I->Retail_Price1, Retail_Price1, 14);
+	memcpy(pICS_482135_I->E_Discount_Price1, E_Discount_Price1, 14);
+	memcpy(pICS_482135_I->Reserve_Amoun, Reserve_Amoun, 4);
+	memcpy(pICS_482135_I->Mobile_Phone_Number, Mobile_Phone_Number, 11);
+	memcpy(pICS_482135_I->Begin_Date, Begin_Date, 8);
+	memcpy(pICS_482135_I->Message_Type, Message_Type, 2);
+	memcpy(pICS_482135_I->Amount1, Amount1, 14);
+	memcpy(pICS_482135_I->Scence_Code, Scence_Code, 12);
+	memcpy(pICS_482135_I->Scence_Name, Scence_Name, 60);
+	memcpy(pICS_482135_I->Product_Name, Product_Name, 50);
+	memcpy(pICS_482135_I->Remark1, Remark1, 160);
+	memcpy(pICS_482135_I->Valid_Days, Valid_Days, 3);
 
   flog( STEP_LEVEL,"----校验密码----\n");
-  /* 校验密码 
+  /* 校验密码 modify by ylw for 异地卡 20120211
   ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
   if ( ret < 0 )
   {
-    flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
-    sprintf( sErrMsg, "密码校验失败![%d]", ret );
-    goto RETURN;
+		flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+		sprintf( sErrMsg, "密码校验失败![%d]", ret );
+		goto RETURN;
   }
   if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
   {
-    flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
-    goto RETURN;
+		flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+		goto RETURN;
   }
-  */
+*/
 
   flog( STEP_LEVEL,"----发往ICS-----\n");
   /*发往ICS需加8位报文长度*/
@@ -338,26 +344,26 @@ RETURN:
 
     memcpy(ics_482135n_buff,ics_recv_buff+sizeof(ics_toa_buff),sizeof(ics_482135n_buff));
 
-    memset(TCUSNM, 0, sizeof(TCUSNM));
-    memset(ThdKey, 0, sizeof(ThdKey));
-    memset(TXNAMT, 0, sizeof(TXNAMT));
-    memset(Return_Code, 0, sizeof(Return_Code));
-    memset(PB_Return_Code_Msg, 0, sizeof(PB_Return_Code_Msg));
-    memset(TckNo, 0, sizeof(TckNo));
+		memset(TCUSNM, 0, sizeof(TCUSNM));
+		memset(ThdKey, 0, sizeof(ThdKey));
+		memset(TXNAMT, 0, sizeof(TXNAMT));
+		memset(Return_Code, 0, sizeof(Return_Code));
+		memset(PB_Return_Code_Msg, 0, sizeof(PB_Return_Code_Msg));
+		memset(TckNo, 0, sizeof(TckNo));
 
-    memcpy(TCUSNM, pICS_482135_N->TCUSNM, 12);
-    memcpy(ThdKey, pICS_482135_N->ThdKey, 18);
-    memcpy(TXNAMT, pICS_482135_N->TXNAMT, 14);
-    memcpy(Return_Code, pICS_482135_N->Return_Code, 3);
-    memcpy(PB_Return_Code_Msg, pICS_482135_N->PB_Return_Code_Msg, 30);
-    memcpy(TckNo, pICS_482135_N->TckNo, 11);
+		memcpy(TCUSNM, pICS_482135_N->TCUSNM, 12);
+		memcpy(ThdKey, pICS_482135_N->ThdKey, 18);
+		memcpy(TXNAMT, pICS_482135_N->TXNAMT, 14);
+		memcpy(Return_Code, pICS_482135_N->Return_Code, 3);
+		memcpy(PB_Return_Code_Msg, pICS_482135_N->PB_Return_Code_Msg, 30);
+		memcpy(TckNo, pICS_482135_N->TckNo, 11);
 
-    trim(TCUSNM);
-    trim(ThdKey);
-    trim(TXNAMT);
-    trim(Return_Code);
-    trim(PB_Return_Code_Msg);
-    trim(TckNo);
+	  trim(TCUSNM);
+	  trim(ThdKey);
+	  trim(TXNAMT);
+	  trim(Return_Code);
+	  trim(PB_Return_Code_Msg);
+	  trim(TckNo);
     setValueOfStr(recv_buff,"TCUSNM",TCUSNM);
     setValueOfStr(recv_buff,"ThdKey",ThdKey);
     setValueOfStr(recv_buff,"TXNAMT",TXNAMT);
@@ -397,7 +403,7 @@ RETURN:
         /*memcpy( sErrMsg, pICS_TOA->RspCod, 6 ) ;*/
         strcpy(sErrMsg, pICS_482135_E->RspMsg);
 
-    trim(sErrMsg);
+		trim(sErrMsg);
 
     strcpy(tmp_val_str,"<font color=ff0000><b>--->交费失败！<br>--->如有疑问，请及时与开户银行联系！</b></font><br>");
     strcat(display_str,tmp_val_str);

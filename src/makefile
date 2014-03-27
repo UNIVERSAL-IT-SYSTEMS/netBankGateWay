@@ -5,7 +5,7 @@ HOME=/home/netbank_mid
 
 SYBASEDIR=/home/sybnet
 
-LIBPATH=-L$(SYBASEDIR)/lib -L$(HOME)/lib 
+LIBPATH=-L$(SYBASEDIR)/lib -L$(HOME)/lib -L/usr/lpp/ctg/lib
 INCL=-I$(HOME)/include -I$(SYBASEDIR)/include 
 LIBS=-lmisc -lmidtools -lsubtrans -lcclaix -ldbfunc -lhscomm -lencrypt\
 	-lct -lcs -ltcl -lcomn -lintl 

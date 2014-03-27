@@ -60,13 +60,13 @@ int ics_proc_482133(char *send_buff,char *recv_buff)
   char      sTellerNo[8];
   char      sErrMsg[64];
   char      ics_port[6];
-  char      sTxnCnl[32];
+
   char			sSTxnAmt[32];
   char			sTCusNm[32];
   char			sLoSeq[32];
   char      sCarType[32];
   char      sCarNo[32];
-
+  char      sTxnCnl[32];
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -89,7 +89,7 @@ int ics_proc_482133(char *send_buff,char *recv_buff)
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
   memset(ics_482133o_buff, 0, sizeof(ics_482133o_buff));
-  
+
   pICS_482133_I=(ICS_DEF_482133_I *)ics_482133i_buff;
   pICS_482133_N=(ICS_DEF_482133_N *)ics_482133n_buff;
   pICS_482133_E=(ICS_DEF_482133_E *)ics_482133e_buff;
@@ -106,8 +106,10 @@ int ics_proc_482133(char *send_buff,char *recv_buff)
   memset(sErrMsg,'\0',sizeof(sErrMsg));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+
   flog( STEP_LEVEL,"--482133 接收[%s]------------------------------",send_buff);
+  
+
 
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");
@@ -115,7 +117,16 @@ int ics_proc_482133(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"482133");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -127,10 +138,6 @@ int ics_proc_482133(char *send_buff,char *recv_buff)
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
   return ret;
-  
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
 
   strcpy(pICS_TIA->TlrId,sTellerNo);
   strcpy(pICS_TIA->TIATyp,"T");

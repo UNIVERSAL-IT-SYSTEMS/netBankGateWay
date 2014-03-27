@@ -63,6 +63,7 @@ int ics_proc_confirm(char *send_buff,char *recv_buff)
   char                  sTitle[30];
   char                  sErrMsg[64];
   char			ics_port[6];
+  char      sTxnCnl[32];
 
   time_t		cur_time;   
 
@@ -106,7 +107,8 @@ int ics_proc_confirm(char *send_buff,char *recv_buff)
         memset(sErrMsg,'\0',sizeof(sErrMsg));
         memset(sTranDate,'\0',sizeof(sTranDate));
         memset(sTellerNo,'\0',sizeof(sTellerNo));
-	memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
+        memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+	      memset( sErrMsg, '\0', sizeof( sErrMsg ) ) ;
 
 flog( STEP_LEVEL,"--482102 接收[%s]------------------------------",send_buff);
 
@@ -153,6 +155,16 @@ flog( STEP_LEVEL,"--482102 接收[%s]------------------------------",send_buff);
   /* STEP1-3: 填上传串的元素值*/
 /*
   strcpy(pICS_482102_I->RsFld1,"P002"); /*第三方交易码(缴费)*/
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   getValueOfStr(send_buff,"biz_id",tmpvalue); /*第三方业务类型*/
   i_biz_id = atoi(tmpvalue);

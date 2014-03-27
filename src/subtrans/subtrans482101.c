@@ -53,6 +53,7 @@ int ics_proc_482101(char *send_buff,char *recv_buff)
   char			sLeft[14];
   char			sRight[3];
   char			ics_port[6];
+  char      sTxnCnl[32];
 
   FILE 			*fp;
 
@@ -87,8 +88,7 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   strcpy(pICS_TIA->CCSCod,"TLU6");   /* CICS交易代码 */
   strcpy(pICS_TIA->TTxnCd,"482101");
   strcpy(pICS_TIA->FeCod,"482101");
-  strcpy(pICS_TIA->TrmNo,"DVID");
-  strcpy(pICS_TIA->TxnSrc,"T0001");   
+  strcpy(pICS_TIA->TrmNo,"DVID"); 
   strcpy(pICS_TIA->NodTrc,"200704100044191");
   strcpy(pICS_TIA->TlrId,"AFAM020");
   strcpy(pICS_TIA->TIATyp,"T");
@@ -109,7 +109,17 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   strcpy(pICS_TIA->TrmVer,"v0000001");
   strcpy(pICS_TIA->OutSys," ");
   strcpy(pICS_TIA->Fil,"  ");
-
+  
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
   /* STEP1-3: 填上传串中的固定元素值*/
   strcpy(pICS_482101_I->RsFld1,"P001"); /*第三方交易码(查询)*/
 

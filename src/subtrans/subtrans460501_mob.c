@@ -92,7 +92,7 @@ int ics_proc_460501_mob(char *send_buff,char *recv_buff)
   memset(sTranNo,'\0',sizeof(sTranNo));
 	memset(s_CDNO, '\0', sizeof(s_CDNO));
 	memset(s_PSWD, '\0', sizeof(s_PSWD));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
   memset(sTellerNo,'\0',sizeof(sTellerNo));
   memset(sTranDate,'\0',sizeof(sTranDate));
 
@@ -105,8 +105,15 @@ int ics_proc_460501_mob(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->FeCod,"460501");
   strcpy(pICS_TIA->TrmNo,"DVID");
 
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
 
   time(&cur_time);
   my_tm = localtime(&cur_time);
@@ -338,6 +345,9 @@ RETURN:
       memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));
       setValueOfStr(recv_buff,"RspCod",tmp_val_str);  /*返回码*/ 
 
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));
+      setValueOfStr(recv_buff,"MGID",tmp_val_str);/*返回码*/
 
       /* 手机银行返回参数 */
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));

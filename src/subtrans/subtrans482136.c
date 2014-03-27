@@ -59,7 +59,6 @@ int ics_proc_482136(char *send_buff,char *recv_buff)
   char      sTranDate[11];
   char      sTellerNo[8];
   char      sErrMsg[64];
-  char      sTxnCnl[32];
   char      ics_port[6];
 
   char			sSTxnAmt[32];
@@ -67,7 +66,7 @@ int ics_proc_482136(char *send_buff,char *recv_buff)
   char			sLoSeq[32];
   char      sCarType[32];
   char      sCarNo[32];
-
+  char      sTxnCnl[32];
   time_t    cur_time;
 
   struct tm   *my_tm;
@@ -90,7 +89,6 @@ int ics_proc_482136(char *send_buff,char *recv_buff)
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
   memset(ics_482136o_buff, 0, sizeof(ics_482136o_buff));
-  memset(sTxnCnl, 0, sizeof(sTxnCnl));
 
   pICS_482136_I=(ICS_DEF_482136_I *)ics_482136i_buff;
   pICS_482136_N=(ICS_DEF_482136_N *)ics_482136n_buff;
@@ -112,17 +110,22 @@ int ics_proc_482136(char *send_buff,char *recv_buff)
   flog( STEP_LEVEL,"--482136 接收[%s]------------------------------",send_buff);
 
   /* STEP1-2:填上传串的固定头 */
-  
-  getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
-  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
-  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
-  
-  
   strcpy(pICS_TIA->CCSCod,"TLU6");
 	strcpy(pICS_TIA->TTxnCd,"482136");
   strcpy(pICS_TIA->FeCod,"482136");
 
   strcpy(pICS_TIA->TrmNo,"DVID");
+  
+  /*将终端的交易渠道赋值进来*/
+  /* 如果TXNSRC值没有上送,默认使用WE441 */
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  if(strstr(send_buff,"TXNSRC")){
+    getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
+  }else{
+    strcpy(sTxnCnl, "WE441");
+  }
+  strcpy(pICS_TIA->TxnSrc, sTxnCnl);
+
   time(&cur_time);
   my_tm = localtime(&cur_time);
   sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);

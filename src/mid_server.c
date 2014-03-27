@@ -18,40 +18,33 @@ int main(void)
 	int	i,ret,len,recv_len;
 	int	sock,timeout;
 	char	sock_port[30],sock_timeout[30];
-	char	send_buff[LEN_ICS_PROC_BUF],recv_buff[LEN_ICS_PROC_BUF];
+	char	send_buff[LEN_MID_PROC_BUF],recv_buff[LEN_MID_PROC_BUF];
         char    tmpbuf[10];
 
 	return_flag = 0;
 
-/*
 	flog(STEP_LEVEL, "取socket配置信息");
 	flog(STEP_LEVEL, "取配置项目[MID_PORT]");
-*/
 	ret = get_config_value(CONFIG_FILE_NAME, "MID_PORT", sock_port);
 	if (ret != RETURN_OK) {
 		flog(ERROR_LEVEL, "取配置信息[MID_PORT]失败[%s][%d]",
 			__FILE__, __LINE__);
 		return ret;
 	}
-/*
 	flog(STEP_LEVEL, "MID_PORT = [%s]", sock_port);
+
 	flog(STEP_LEVEL, "取配置项目[SOCKET_TIMEOUT]");
-*/
 	ret = get_config_value(CONFIG_FILE_NAME,"SOCKET_TIMEOUT",sock_timeout);
 	if (ret != RETURN_OK) {
 		flog(ERROR_LEVEL, "取配置信息[SOCKET_TIMEOUT]失败[%s][%d]",
 			__FILE__, __LINE__);
 		return ret;
 	}
-/*
 	flog(STEP_LEVEL, "SOCKET_TIMEOUT = [%s]", sock_timeout);
-*/
 
 	timeout = atoi(sock_timeout);
 
-/*
 	flog(STEP_LEVEL, "取配置信息完成");
-*/
 
 	signal(SIGCLD,  SIG_IGN);
 	signal(SIGHUP,  SIG_IGN);
@@ -87,9 +80,8 @@ int main(void)
 		}
 
 		memset(send_buff, '\0', sizeof(send_buff));
-/*
+
 		flog(STEP_LEVEL, "接收分行特色业务请求");
-*/		
                 memset(tmpbuf,0,sizeof(tmpbuf));
 		len = tcp_svr_recv(newsock, tmpbuf, sizeof(char)*4, timeout);
                 tmpbuf[4]=0;
@@ -107,24 +99,20 @@ int main(void)
 		strcat(send_buff,"|");
 
 		return_flag = 1;
-/*
+
 		flog(STEP_LEVEL, "mid_server.c -->开始进行分行特色业务处理");
+
 		flog(STEP_LEVEL, "连接数据库");
-*/
-/*
 		ret = connect_db();
 		if (ret != RETURN_OK) {
 			flog(ERROR_LEVEL,"连接数据库失败 [%s][%d]", __FILE__, __LINE__);
 			return ret;
 		}
 		flog(STEP_LEVEL, "连接数据库成功");
-*/
 
 		/* 调用分行特色业务处理模块 */
 
-		flog( STEP_LEVEL,"--start_mid_process send_buff=[%s]------------------------------",send_buff);
 		ret = start_mid_process(send_buff,recv_buff);
-		flog( STEP_LEVEL,"--start_mid_process recv_buff=[%s]------------------------------",recv_buff);
 		if (ret != RETURN_OK) {
  			setValueOfStr(recv_buff,"MGID","BBBBBBB");/*返回码*/
 
@@ -155,7 +143,7 @@ int main(void)
     			exit(0);
    		}
 
-	/*	dbdisconn();*/
+		dbdisconn();
 		tcp_svr_close(newsock);
 		exit(0);
 	}

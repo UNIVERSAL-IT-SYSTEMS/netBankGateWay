@@ -8,8 +8,8 @@
 #define CONFIG_FILE_NAME	"/home/netbank_mid/config/netbank.cfg"
 #define	LOG_LEVEL		6
 #define BUF_LEVEL               0
-#define LOG_FILE_NAME           "./netbank.log"
-#define BUF_FILE_NAME           "./netbank_buf.log"
+#define LOG_FILE_NAME           "/tmp/netbank_mid_log.log"
+#define BUF_FILE_NAME           "/tmp/netbank_mid_buf.log"
 
 
 /* 通讯定义 珠海版本不用这里的定义 */
@@ -50,5 +50,7 @@
 #define TRANSACTION_NOT_SAVED	0			/* 交易不被缓存 */
 
 #define TIMEOUT			120			/* 通讯超时 */
+#define	ICS_ADDR 		"182.53.15.204"		/* ICS地址 */
+#define ICS_PORT		35850			/* ICS端口 */
 
 #endif

@@ -1,3 +1,8 @@
+/* 注意
+  由于按长度取数据,
+  这里的结构定义中域长度都没有考虑结束符\0
+*/
+
 /* HSTTIA */
 typedef struct ICS_DEF_TIA{
     char CCSCod[4];
@@ -128,8 +133,8 @@ char  RspMsg[56];                  /*出错原因*/
  */
 
 typedef struct ICS_DEF_928460_I{
-    char TxnCnl[1];   /* 交易渠道:1电话银行;2网银;3ATM/CDM/CRS;
-                    4POS;5多媒体;6手机 */
+    char TxnCnl[1];   /* 交易渠道:1-电话银行;2-网银;3-ATM/CDM/CRS;
+                    4-POS;5-多媒体;6-手机 */
     char ActNo[21];   /* 帐号 */
     char CusId[13];   /* 客户号 */
     char PINTyp[1];   /* 密码类型 */
@@ -345,7 +350,7 @@ char  RspMsg[56];                  /*出错原因*/
 }ICS_DEF_482112_E;
 
 
-/** add by viatt lichen 20081010 begin **/
+/** add by viatt lichen 2008-10-10 begin **/
 /*
  * 482115
  * 车船税查询
@@ -660,11 +665,11 @@ typedef struct ICS_DEF_482135_I{
   char  Begin_Date[8];            /*使用日期*/
   char  Message_Type[2];          /*短信类型*/
   char  Amount1[14];              /*总金额*/
-  char  ActTyp[1];                /*帐号类型NULLABLE*/
+  char  ActTyp[1];                /*帐号类型--NULLABLE*/
   char  ActNo[21];                /*代扣帐号*/
   char  PinBlk[20];               /*交易密码*/
-  char  TxCck2[40];               /*第二磁道NULLABLE*/
-  char  TxCck3[110];              /*第三磁道NULLABLE*/
+  char  TxCck2[40];               /*第二磁道--NULLABLE*/
+  char  TxCck3[110];              /*第三磁道--NULLABLE*/
   char  Scence_Code[12];          /*景区代码*/
   char  Scence_Name[60];          /*景区名称*/
   char  Product_Name[50];         /*门票名称*/
@@ -713,9 +718,9 @@ typedef struct ICS_DEF_482147_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482147_E;
-/** add by viatt lichen 20081010 end **/
+/** add by viatt lichen 2008-10-10 end **/
 
-/** add by viatt lichen 20090107 begin **/
+/** add by viatt lichen 2009-01-07 begin **/
 typedef struct ICS_DEF_481152_I{
   char  TxnDat[8];      /*日期*/
   char  AbuTyp[4];      /*卡类*/
@@ -835,9 +840,9 @@ typedef struct ICS_DEF_482140_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482140_E;
-/** add by viatt lichen 20090107 end **/
+/** add by viatt lichen 2009-01-07 end **/
 
-/*add by viatt linzw 20090218 begin*/
+/*add by viatt linzw 2009-02-18 begin*/
 typedef struct ICS_DEF_482149_I{
   char  bank_acc[32];           /*代扣帐号*/
 }ICS_DEF_482149_I;
@@ -845,10 +850,10 @@ typedef struct ICS_DEF_482149_I{
 typedef struct ICS_DEF_482149_N{
   char  TmpDat[4];       /*长度*/
   char  ApFmt[5];        /*前端空格式码 48D01*/ 
-  char  sign_flag[1];     /*签约类型 0网银 1自助通 */
+  char  sign_flag[1];     /*签约类型 0-网银 1-自助通 */
   char  inst_no[9];       /*签约机构 */
-  char  live_flag[1];     /*激活标志 0激活 1未激活 */
-  char  tran_flag[1];     /*交易标志 0允许交易 1不允许交易 */
+  char  live_flag[1];     /*激活标志 0-激活 1-未激活 */
+  char  tran_flag[1];     /*交易标志 0-允许交易 1-不允许交易 */
   char  acc_type[1];      /*扣款方式 1:预扣款用户 0:实时扣款用户 */
   char  yct_pwd[10];      /*羊城通密码 */
   char  bank_acc[30];     /*账号 */
@@ -873,7 +878,7 @@ typedef struct ICS_DEF_482149_N{
   char  frequence[4];     /*频度 */
   char  reg_date[4];      /*签约日期 */
   char  cncl_date[4];     /*解约日期 */
-  char  cncl_flag[4];     /* 签解约标志 0  签约 1  解约 */
+  char  cncl_flag[4];     /* 签解约标志 0 - 签约 1 - 解约 */
    /*char  address[50];     地址 */
   char  reserve1[30];     /*  预留字段1 */
   char  reserve2[30];     /*  预留字段2 */
@@ -892,10 +897,10 @@ typedef struct ICS_DEF_482149_E{
 }ICS_DEF_482149_E;
 /*签约*/
 typedef struct ICS_DEF_482138_I{
-    char  sign_flag[1];          /*签约类型 0网银 1自助通 */
+    char  sign_flag[1];          /*签约类型 0-网银 1-自助通 */
     char  inst_no[9];            /*签约机构 */
-    char  live_flag[1];            /*激活标志 0激活 1未激活 */
-    char  tran_flag[1];            /*交易标志 0允许交易 1不允许交易 */
+    char  live_flag[1];            /*激活标志 0-激活 1-未激活 */
+    char  tran_flag[1];            /*交易标志 0-允许交易 1-不允许交易 */
     char  acc_type[1];            /*扣款方式 1:预扣款用户 0:实时扣款用户 */
     char  yct_pwd[10];            /*羊城通密码 */
     char  bank_acc[19];           /*账号 */
@@ -920,13 +925,14 @@ typedef struct ICS_DEF_482138_I{
     char  frequence[4];           /*频度 */
     char  reg_date[4];           /*签约日期 */
     char  cncl_date[4];           /*解约日期 */
-    char  cncl_flag[4];           /* 签解约标志 0  签约 1  解约 */
+    char  cncl_flag[4];           /* 签解约标志 0 - 签约 1 - 解约 */
      /*char  address[50];          地址 */
     char  reserve1[30];           /*  预留字段1 */
     char  reserve2[30];           /*  预留字段2 */
     char  reserve3[30];           /*  预留字段3 */
     char  reserve4[60];           /*  预留字段4 */
     char  reserve5[60];           /*  预留字段5 */
+    char  PinBlk[20];           /*  交易密码 */
 }ICS_DEF_482138_I;
 
 typedef struct ICS_DEF_482138_N{
@@ -945,7 +951,7 @@ typedef struct ICS_DEF_482138_E{
 }ICS_DEF_482138_E;
 /* 解约*/
 typedef struct ICS_DEF_482139_I{
-    char  sign_flag[1];     /*签约类型 0网银 1自助通 */
+    char  sign_flag[1];     /*签约类型 0-网银 1-自助通 */
     char  inst_no[9];            /*签约机构 */
     char  bank_acc[19];           /*账号 */
     char  card1[10];           /* 解约羊城通卡号1 */
@@ -1006,7 +1012,7 @@ typedef struct ICS_DEF_482159_E{
   char  InPos[4];        /*0001*/
   char  RspMsg[56];      /*出错原因*/
 }ICS_DEF_482159_E;
-/*add by viatt linzw 20090218 end*/
+/*add by viatt linzw 2009-02-18 end*/
 
 /*add by xuan for test */
 typedef struct ICS_DEF_482999_I{
@@ -1053,6 +1059,7 @@ typedef struct ICS_DEF_482101_I_TC{
   char  ExtNum[2];                    /*扩展号码   */
   char  LotNum[100];                  /*投注号码   */
   char  CntTel[20];                   /*手机号码   */
+  char  PinBlk[20];                   /*交易密码   */
 }ICS_DEF_482101_I_TC;
 
 typedef struct ICS_DEF_482101_N_TC{
@@ -1295,84 +1302,74 @@ typedef struct ICS_DEF_482184_E{
   char  InPos[4];                    /*0001*/
   char  RspMsg[56];                  /*出错原因*/
 }ICS_DEF_482184_E;
- 
-
 
 /*
  * 460244
  * 电费缴费前查询
  */
-
 typedef struct ICS_DEF_460244_I{
-    char ActNo[21];   /*银行卡号*/
-    char TCusId[21];     /*客户编号*/
-    char LChkTm[8];  /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
+        char ActNo[21];   /*银行卡号*/
+        char TCusId[21];     /*客户编号*/
+        char LChkTm[8];  /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
 }ICS_DEF_460244_I;
 
-
 typedef struct ICS_DEF_460244_N{
-    char TmpDat[4];      /*package length*/ 
-    char ApCode[2];     /*SC*/
-    char OFmtCd[3];     /*D04*/
-    char TxnAmt[15];   /*交易金额*/
-    char ChkTim[10];   /*交易日期时间*/
-    char DptTyp[4];    /*配营部类型*/
-    char UsrNam[23];   /*用户姓名*/
-    char UsrAdd[32];   /*用电地址*/
+        char TmpDat[4];      /*package length*/ 
+        char ApCode[2];     /*SC*/
+        char OFmtCd[3];     /*D04*/
+        char TxnAmt[15];   /*交易金额*/
+        char ChkTim[10];   /*交易日期时间*/
+        char DptTyp[4];    /*配营部类型*/
+        char UsrNam[23];   /*用户姓名*/
+        char UsrAdd[32];   /*用电地址*/
  }ICS_DEF_460244_N;
 
 typedef struct ICS_DEF_460244_E{
-    char TmpDat[4];     /*package length*/
-    char ApCode[2];     /*SC*/
-    char OFmtCd[3];     /*D04*/
-    char  RspCod[6];    /* */
-    char InPos[4];     /*0001*/
-    char RspMsg[56];/*出错原因*/
+        char TmpDat[4];     /*package length*/
+        char ApCode[2];     /*SC*/
+        char OFmtCd[3];     /*D04*/
+        char  RspCod[6];    /* */
+        char InPos[4];     /*0001*/
+        char RspMsg[56];/*出错原因*/
 }ICS_DEF_460244_E;
-
-
 
 /*
  * 460245
  *电费缴纳实时缴费交易
  */
-
 typedef struct ICS_DEF_460245_I{
-    char ActNo[21];   /*主账号*/
-    char TCusId[21];  /*客户编号*/
-    char TCusNm[23];  /*用户姓名*/
-    char LChkTm[8];   /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
-    char DptTyp[4];   /*配型部类型*/
-    char TxnAmt[12];  /*交易金额*/
-    char Fee[12];     /*交易手续费*/
-    char VchTyp[3];   /*结算凭证*/
-    char VchNo[8];    /*凭证号*/
-    char BilDat[8];   /*凭证日期*/
-    char PinBlk[20];  /*密码*/
+        char ActNo[21];   /*主账号*/
+        char TCusId[21];  /*客户编号*/
+        char TCusNm[23];  /*用户姓名*/
+        char LChkTm[8];   /*电费月份：99999999表示所有欠费，yyyymm99当月所有欠费*/
+        char DptTyp[4];   /*配型部类型*/
+        char TxnAmt[12];  /*交易金额*/
+        char Fee[12];     /*交易手续费*/
+        char VchTyp[3];   /*结算凭证*/
+        char VchNo[8];    /*凭证号*/
+        char BilDat[8];   /*凭证日期*/
+        char PinBlk[20];  /*密码*/
 }ICS_DEF_460245_I;
 
 typedef struct  ICS_DEF_460245_N{
-    char TmpDat[4];   /*package length*/
-	  char ApCode[2];   /*SC*/
-    char OFmtCd[3];  /*D04*/
-    char TLogNo[12];  /*供电公司系统参考号*/
-    char TckNo[12];   /*会计业务流水号*/
-    char TActDt[4];   /*供电公司清算日期*/
+        char TmpDat[4];   /*package length*/
+	char ApCode[2];   /*"SC"*/
+        char OFmtCd[3];  /*"D04"*/
+        char TLogNo[12];  /*供电公司系统参考号*/
+        char TckNo[12];   /*会计业务流水号*/
+        char TActDt[4];   /*供电公司清算日期*/
 }ICS_DEF_460245_N;
 
 typedef struct ICS_DEF_460245_E{
-    char TmpDat[4];
-	  char ApCode[2];  /*SC*/
-    char OFmtCd[3];  /*D04*/
-    char RspCod[6];  /* */
-    char InPos[4];   /*0001*/
-    char RspMsg[56]; /* */
-    char LogNo[14];  /*  */
-    char TckNo[12];  /*  */
+        char TmpDat[4];
+	char ApCode[2];  /*"SC"*/
+        char OFmtCd[3];  /*"D04"*/
+        char RspCod[6];  /* */
+        char InPos[4];   /*0001*/
+        char RspMsg[56]; /* */
+        char LogNo[14];  /*  */
+        char TckNo[12];  /*  */
 }ICS_DEF_460245_E;  
-
-
-
 
 /*
  * 460501
@@ -1395,8 +1392,8 @@ typedef struct ICS_DEF_460501_I_MOB{
 
 typedef struct  ICS_DEF_460501_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char MstTel[20];  /*主手机号码*/
     char SigTel[20];   /*签约手机号码*/
     char LogNo[30];   /*移动返回流水号*/
@@ -1404,8 +1401,8 @@ typedef struct  ICS_DEF_460501_N_MOB{
 
 typedef struct ICS_DEF_460501_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* */
@@ -1430,8 +1427,8 @@ typedef struct ICS_DEF_460506_I_MOB{
 
 typedef struct  ICS_DEF_460506_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char  ActTyp  [1]   ; /* 账号类型 */
     char  ActNo   [28]  ; /*银行账号*/
     char  IdTyp   [2]   ; /* 证件类型 */
@@ -1442,8 +1439,8 @@ typedef struct  ICS_DEF_460506_N_MOB{
 
 typedef struct ICS_DEF_460506_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* 错误信息 */
@@ -1459,8 +1456,8 @@ typedef struct ICS_DEF_460511_I_MOB{
 
 typedef struct  ICS_DEF_460511_N_MOB{
     char TmpDat[4];   /*package length*/
-    char ApCode[2];   /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char  IdTyp  [2]  ; /*证件种类*/
     char  IdNo   [20] ; /*证件号码*/
     char  ActNam [32] ; /*户名*/
@@ -1469,8 +1466,8 @@ typedef struct  ICS_DEF_460511_N_MOB{
 
 typedef struct ICS_DEF_460511_E_MOB{
     char TmpDat[4];
-    char ApCode[2];  /*SC*/
-    char OFmtCd[3];  /*D04*/
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
     char RspCod[6];  /* */
     char InPos[4];   /*0001*/
     char RspMsg[56]; /* 错误信息 */
