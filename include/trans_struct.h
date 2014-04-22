@@ -1053,6 +1053,7 @@ typedef struct ICS_DEF_482101_I_TC{
   char  ExtNum[2];                    /*扩展号码   */
   char  LotNum[100];                  /*投注号码   */
   char  CntTel[20];                   /*手机号码   */
+  char  PinBlk[20];                   /*交易密码   */
 }ICS_DEF_482101_I_TC;
 
 typedef struct ICS_DEF_482101_N_TC{
@@ -1512,6 +1513,7 @@ typedef struct ICS_DEF_460602_I_MOB{
     char  TelNum  [20];  /*被充值号码*/
     char  CrdNo   [21];  /*卡号*/
     char  TxnAmt  [15];  /*充值金额*/
+    char  PinBlk  [20];  /*密码*/
 }ICS_DEF_460602_I_MOB;
 
 typedef struct  ICS_DEF_460602_N_MOB{
