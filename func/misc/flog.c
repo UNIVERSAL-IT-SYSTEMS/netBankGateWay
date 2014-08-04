@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <time.h>
-#include <unistd.h>
 #include "miscfunc.h"
 #include "error.h"
 #include "netbank_mid.h"
@@ -23,107 +21,16 @@ extern	int	BUF_LEVEL;
 extern	char	BUF_FILE_NAME[100];
 */
 
-int IntToStr( unsigned char *bp, unsigned int s, int len )
-{
-    register int i;
-
-    for ( i = len - 1; i >= 0; i -- )
-      {
-        bp[i] = ( unsigned char )( s % 10 ) + '0';
-        s = s / 10;
-      }
-    return ( s );
-}
-
-int
-GetTime( char *bp )
-{
-    long t;
-    struct tm *tbp;
-
-    time( ( long * )&t );
-    tbp = localtime( &t );
-    IntToStr( bp, tbp->tm_hour, 2 );
-    bp[2] = ':';
-    IntToStr( bp + 3, tbp->tm_min, 2 );
-    bp[5] = ':';
-    IntToStr( bp + 6, tbp->tm_sec, 2 );
-    bp[8] = '\0';
-}
-
-int
-GetDate( char *bp )
-{
-    long t;
-    struct tm *tbp;
-
-    time( ( long * )&t );
-    tbp = localtime( &t );
-    IntToStr( bp, tbp->tm_year + 1900, 4 );
-    IntToStr( bp + 4, tbp->tm_mon + 1, 2 );
-    IntToStr( bp + 6, tbp->tm_mday, 2 );
-    bp[8] = '\0';
-}
-
-void ErrLog( char *file, int line, char *fmt, ... )
-{
-    va_list ap;
-    FILE   *fp;
-    int    fd;
-    char timebuf[20];
-    char datebuf[20];
-		char log_name[100];
-
-		memset( log_name, 0, sizeof( log_name ) ) ;
-		memset( datebuf, 0, sizeof( datebuf ) ) ;
-		GetDate( datebuf );
-		strcpy( log_name, LOG_FILE_NAME ) ;
-		strcat( log_name, "." ) ;
-		strcat( log_name, datebuf ) ;
-
-    if ( (fp=fopen( log_name, "a+")) == NULL ) {
-        fprintf(stderr, "open %s file error.\n", LOG_FILE_NAME);
-        return;
-    }
-    fd = fileno(fp);
-    lockf (fd, F_LOCK, 0l);
-    GetTime( timebuf );
-    fprintf (fp, "[%s] ", timebuf );
-    fprintf (fp, "[%s line %d] :\n", file, line);
-    va_start( ap, fmt );
-    vfprintf( fp, fmt, ap );
-		fprintf(fp, "\n");
-    va_end( ap );
-    lockf(fd, F_ULOCK, 0l);
-    fclose(fp);
-    return;
-}
-
 void
 flog(int level, char *fmt, ...)
 {
 	FILE *fp;
 	va_list	args;
-	int		fd;
-	char	timebuf[20];
-  char datebuf[20];
-	char log_name[100];
-
-	memset( log_name, 0, sizeof( log_name ) ) ;
-	memset( datebuf, 0, sizeof( datebuf ) ) ;
-	GetDate( datebuf );
-	strcpy( log_name, LOG_FILE_NAME ) ;
-	strcat( log_name, "." ) ;
-	strcat( log_name, datebuf ) ;
-
-	if ((fp = fopen( log_name, "a+" ) ) == NULL)
+	
+	if ((fp = fopen(LOG_FILE_NAME, "a")) == NULL)
 		return;
 
 	if (level <= LOG_LEVEL) {
-    fd = fileno(fp);
-    lockf (fd, F_LOCK, 0l);
-    GetTime( timebuf );
-    fprintf (fp, "%s ", timebuf );
 		va_start(args, fmt);
 		vfprintf(fp, fmt, args);
 		fprintf(fp, "\n");
@@ -135,7 +42,6 @@ flog(int level, char *fmt, ...)
 		}
 		*/
 		va_end(args);
-    lockf(fd, F_ULOCK, 0l);
 	}
 
 	fclose(fp);

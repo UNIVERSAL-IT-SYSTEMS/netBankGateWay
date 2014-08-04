@@ -45,7 +45,6 @@ void getValueOfStr(char *str1, char *str2, char *str3)
         FILE *fp;
 
 	memset(tmp_str,'\0',sizeof(tmp_str));
-	memset(str3,'\0',sizeof(str3));
 
 	strcpy(tmp_str,strstr(str1,str2));
         len=strstr(tmp_str,"|")-strstr(tmp_str,",")-1;
@@ -55,8 +54,8 @@ void getValueOfStr(char *str1, char *str2, char *str3)
                 fp=fopen("/tmp/zxz1.log","a");
                 fprintf(fp,"str2=[%s]str3=[%s]1[%d]2[%d]\n",str2,str3,strstr(tmp_str,"|")-strstr(tmp_str,str2)-strlen(str2)-1,strstr(tmp_str,"|")-strstr(tmp_str,",")-1);
                 fclose(fp);
-	flog(STEP_LEVEL,"str3 = [%s]\n",str3);
         */
+	flog(STEP_LEVEL,"str3 = [%s]\n",str3);
 
 }
 
@@ -67,3 +66,4 @@ void setValueOfStr(char *str1, char *str2, char *str3)
 	strcat(str1,str3);
 	strcat(str1,"|");
 }
+

@@ -1,0 +1,347 @@
+/****************************************
+ *程序名:trans460622.c
+ *功  能:电力缴费
+ *日  期:
+ ****************************************/
+
+#include        <stdio.h>
+#include        <stdlib.h>
+#include        <memory.h>
+#include        <signal.h>
+#include        <sys/types.h>
+#include        <time.h>
+#include        <errno.h>
+#include        <dlfcn.h>
+#include        "trans_macro.h"
+#include        "trans_struct.h"
+#include        "netbank_mid.h"
+#include        "error.h"
+
+
+int ics_proc_460622_uncc(char *send_buff,char *recv_buff)
+{
+  /*说明：send_buff-上传报文；
+          recv_buff-下传报文;
+          ics_send_buff-与后台通讯的发送串;
+          ics_recv_buff-与后台通讯的接收串;
+ */
+
+  int     i;
+  int     len;
+  int     ret;
+  int     offset;
+  int     i_biz_id;
+
+  ICS_DEF_TIA   *pICS_TIA;
+  ICS_DEF_TOA   *pICS_TOA;
+  ICS_DEF_460622_I  *pICS_460622_I;
+  ICS_DEF_460622_N  *pICS_460622_N;
+  ICS_DEF_460622_E  *pICS_460622_E;
+
+  char      ics_send_buff[LEN_ICS_PROC_BUF];
+  char      ics_recv_buff[LEN_ICS_PROC_BUF];
+  char      ics_460622i_buff[156];
+  char      ics_460622n_buff[49];
+  char      ics_460622e_buff[75];
+  char      ics_tia_buff[171];
+  char      ics_toa_buff[114];
+  char      tmp_val_str[LEN_TMP_VAL_STR];
+  char      tmp_val_str2[LEN_TMP_VAL_STR];
+  char      display_str[LEN_ICS_PROC_BUF];
+  char      display_log_str[LEN_ICS_PROC_BUF];
+  char      tmpvalue[256];  /*从上传报文中取得的某项值*/
+  
+  char      s_CDNO[LEN_CDNO]; /* 卡号 */
+  char      s_PSWD[21]; /* 密码 */
+  char      sTxnAmt[15];/*金额*/
+  char      sphone[20];/*手机号码*/
+    
+  char      sLen[8];
+  char      sLeft[14];
+  char      sRight[3];
+  char      sTranNo[16];
+  char      sTranDate[11];
+  char      sTxnCnl[32];
+  char      sTellerNo[8];
+  char      sErrMsg[64];
+  char      ics_port[6];
+  time_t    cur_time;
+  struct tm   *my_tm;
+
+
+  
+  FILE      *fp;
+
+/*
+  void *pComplibhandle; * Handle to shared lib file *
+  int (*pCompfunchandle)(); * Pointer to loaded routine */
+
+  /*-------------------STEP1:通讯前处理-组成上传串--------------------*/
+
+  /* STEP1-1:清理结构和变量 */
+
+  memset(ics_send_buff,'\0',sizeof(ics_send_buff));
+  memset(ics_recv_buff,'\0',sizeof(ics_recv_buff));
+  memset(ics_460622i_buff,'\0',sizeof(ics_460622i_buff));
+  memset(ics_460622n_buff,'\0',sizeof(ics_460622n_buff));
+  memset(ics_460622e_buff,'\0',sizeof(ics_460622e_buff));
+  memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
+  memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
+
+  pICS_460622_I=(ICS_DEF_460622_I *)ics_460622i_buff;
+  pICS_460622_N=(ICS_DEF_460622_N *)ics_460622n_buff;
+  pICS_460622_E=(ICS_DEF_460622_E *)ics_460622e_buff;
+  pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
+  pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
+
+  memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+  memset(tmp_val_str2,'\0',sizeof(tmp_val_str2));
+  memset(display_str,'\0',sizeof(display_str));
+  memset(display_log_str,'\0',sizeof(display_log_str));
+  memset(tmpvalue,'\0',sizeof(tmpvalue));
+  memset(sTranNo,'\0',sizeof(sTranNo));
+  memset(sErrMsg,'\0',sizeof(sErrMsg));
+  memset(sTranDate,'\0',sizeof(sTranDate));
+  memset(sTxnCnl, '\0', sizeof(sTxnCnl));
+  memset(sTellerNo,'\0',sizeof(sTellerNo));
+  memset(s_CDNO, '\0', sizeof(s_CDNO));
+  memset(s_PSWD, '\0', sizeof(s_PSWD));
+  memset(sTxnAmt, '\0', sizeof(sTxnAmt));
+  memset(sphone, '\0', sizeof(sphone));
+  
+  
+
+
+flog( STEP_LEVEL,"--460622 接收[%s]------------------------------",send_buff);
+
+   /* STEP1-2:填上传串的固定头 */
+  strcpy(pICS_TIA->CCSCod,"TLU6");
+  strcpy(pICS_TIA->TTxnCd,"460622");
+  strcpy(pICS_TIA->FeCod,"460622");
+  strcpy(pICS_TIA->TrmNo,"DVID");
+  
+
+  /*交易编号和交易日期*/
+  time(&cur_time);
+  my_tm = localtime(&cur_time);
+  sprintf(sTranNo,"%d%d%d%d%d%d11", my_tm->tm_year+1900, my_tm->tm_mon+1, my_tm->tm_mday, my_tm->tm_hour, my_tm->tm_min, my_tm->tm_sec);
+  sprintf(sTranDate,"%d-%d-%d",my_tm->tm_year+1900,my_tm->tm_mon+1,my_tm->tm_mday);
+  
+  
+  /*将终端的交易渠道赋值进来*/
+  getValueOfStr(send_buff,"TXNSRC",sTxnCnl); /*交易渠道*/
+  flog( STEP_LEVEL,"--TXNSRC 接收[%s]------------------------------",sTxnCnl);
+  strcpy(pICS_TIA->TxnSrc,sTxnCnl);
+  
+  strcpy(pICS_TIA->NodTrc,sTranNo);   /*柜员号*/
+  
+  
+  
+
+  ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
+  if (ret != RETURN_OK)
+    return ret;
+
+  strcpy(pICS_TIA->TlrId,sTellerNo);
+  strcpy(pICS_TIA->TIATyp,"T");
+  strcpy(pICS_TIA->AthLvl,"00");
+  strcpy(pICS_TIA->Sup1Id," ");
+  strcpy(pICS_TIA->Sup2Id," ");
+  strcpy(pICS_TIA->Sup1Pw," ");
+  strcpy(pICS_TIA->Sup2Pw," ");
+  strcpy(pICS_TIA->Sup1Dv," ");
+  strcpy(pICS_TIA->Sup2Dv," ");
+  strcpy(pICS_TIA->AthTbl," ");
+  strcpy(pICS_TIA->AthLog," ");
+  strcpy(pICS_TIA->HLogNo," ");
+  strcpy(pICS_TIA->CprInd,"0");
+  strcpy(pICS_TIA->EnpInd,"0");
+  strcpy(pICS_TIA->NodNo,"441200");
+  strcpy(pICS_TIA->OprLvl," ");
+  strcpy(pICS_TIA->TrmVer,"v0000001");
+  strcpy(pICS_TIA->OutSys," ");
+  strcpy(pICS_TIA->Fil," ");
+
+  /* STEP1-3: 填上传串的元素值*/
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"BusiType", tmpvalue);
+  strcpy(pICS_460622_I->BusiType, tmpvalue);
+  
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"TCusId", tmpvalue);
+  strcpy(pICS_460622_I->TCusId, tmpvalue);
+  flog( STEP_LEVEL,"--TCusId 接收[%s]------------------------------",tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"TCusNm", tmpvalue);
+  strcpy(pICS_460622_I->TCusNm, tmpvalue);
+  flog( STEP_LEVEL,"--TCusNm 接收[%s]------------------------------",tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"MonSum", tmpvalue);
+  strcpy(pICS_460622_I->MonSum, tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"IdType", tmpvalue);
+  strcpy(pICS_460622_I->IdType, tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"IdNo", tmpvalue);
+  strcpy(pICS_460622_I->IdNo, tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"ActTpe", tmpvalue);
+  strcpy(pICS_460622_I->ActTpe, tmpvalue);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"ActNo", tmpvalue);
+  strcpy(pICS_460622_I->ActNo,tmpvalue);
+  strcpy(s_CDNO, tmpvalue);  
+  flog( STEP_LEVEL,"--s_CDNO 接收[%s]------------------------------",s_CDNO);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"PSWD",tmpvalue); /*密码*/
+  strcpy(pICS_460622_I->PinBlk,tmpvalue);
+  strcpy(s_PSWD,tmpvalue);
+  flog( STEP_LEVEL,"--s_PSWD 接收[%s]------------------------------",s_PSWD);
+  
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
+  getValueOfStr(send_buff,"ActNam", tmpvalue);
+  strcpy(pICS_460622_I->ActNam, tmpvalue);
+  
+  /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
+
+  len=sizeof(ICS_DEF_TIA);
+  for(i=0;i<len;i++)
+  {
+    if(ics_tia_buff[i]==0)
+      ics_tia_buff[i]=' ';
+  }
+
+  /* 校验密码 */
+   /*flog( STEP_LEVEL,"----校验密码----\n");
+  ret = ics_proc_928460( "1", s_CDNO, "1", s_PSWD, pICS_TOA->RspCod ) ;
+  if ( ret < 0 )
+  {
+                flog( STEP_LEVEL,"CALL 928460 Fail [%d]",ret);
+                sprintf( sErrMsg, "密码校验失败![%d]", ret );
+                goto RETURN;
+  }
+  if( memcmp( pICS_TOA->RspCod, "000000", 6 ) != 0 )
+  {
+                flog( STEP_LEVEL,"928460 return [%s]", pICS_TOA->RspCod ) ;
+                goto RETURN;
+  }
+  */
+
+  /*发往ICS需加8位报文长度*/
+  offset=0;
+  offset=offset+8;
+
+  len=sizeof(ICS_DEF_TIA);
+  for(i=0;i<len;i++)
+  {
+    if(ics_tia_buff[i]==0)
+      ics_tia_buff[i]=' ';
+  }
+  memcpy(ics_send_buff+offset,ics_tia_buff,len);
+  offset=offset+sizeof(ICS_DEF_TIA);
+
+  len=sizeof(ICS_DEF_460622_I);
+  for(i=0;i<len;i++)
+  {
+    if(ics_460622i_buff[i]==0)
+      ics_460622i_buff[i]=' ';
+  }
+  memcpy(ics_send_buff+offset,ics_460622i_buff,len);
+  offset=offset+sizeof(ICS_DEF_460622_I);
+
+  /*发往ICS需加8位报文长度在头*/
+  memcpy(sLen,'\0',8);
+  sprintf(sLen,"%08d",offset-8);
+  memcpy(ics_send_buff,sLen,8);
+
+  ics_send_buff[offset] = '\0';
+
+ 
+   /*----------------------STEP2:与中间业务前置机通讯-----------------*/
+
+
+  /* 与ICS通讯 */
+  memset(ics_port,'\0',sizeof(ics_port));
+
+  ret = get_config_value(CONFIG_FILE_NAME, "ICS_PORT_UNCC", ics_port);
+  if (ret != RETURN_OK)
+        return -2;
+
+
+  ret=clientics( ics_send_buff, ics_recv_buff, atoi(ics_port) );
+
+  if(ret != RETURN_OK)
+    return (-1);
+ 
+ memcpy(pICS_TOA,ics_recv_buff,sizeof(ICS_DEF_TOA));
+
+
+RETURN:
+
+ /*--------------------通讯后处理:组成回传报文------------------*/
+
+  if(memcmp(pICS_TOA->RspCod,"000000",sizeof(pICS_TOA->RspCod))==0)/*成功*/
+  {
+    /* STEP3-1处理页面显示要素: 在这里填写的字段，就是在页面上显示的字段 */
+    /* 注意，<br>是页面显示的换行符号 */
+
+    memcpy(pICS_460622_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_460622_N));
+   
+    /* 调用setValueOf函数填充 */
+    /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/
+
+
+
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));   /*置空了*/
+    memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));
+    setValueOfStr(recv_buff,"MGID",tmp_val_str); /*返回码*/ 
+   
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_N->TmpDat,sizeof(pICS_460622_N->TmpDat));
+    setValueOfStr(recv_buff,"TmpDat",tmp_val_str);/*包体长度*/
+
+ 
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_N->ApCode,sizeof(pICS_460622_N->ApCode));
+    setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*SC*/
+        
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_N->OFmtCd,sizeof(pICS_460622_N->OFmtCd));
+    setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*D04*/
+
+
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_N->TransSeq,sizeof(pICS_460622_N->TransSeq));
+    setValueOfStr(recv_buff,"TransSeq",tmp_val_str);/*银行流水号*/ 
+        
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_N->OppTransSeq,sizeof(pICS_460622_N->OppTransSeq));
+    setValueOfStr(recv_buff,"OppTransSeq",tmp_val_str);/*联通流水号*/ 
+        
+  }
+  else
+  { /*失败*/
+    memcpy(pICS_460622_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_460622_E));
+
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_TOA->RspCod,sizeof(pICS_TOA->RspCod));
+    setValueOfStr(recv_buff,"RspCod",tmp_val_str);  /*返回码*/
+   
+    memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+    memcpy(tmp_val_str,pICS_460622_E->RspMsg,sizeof(pICS_460622_E->RspMsg));
+    setValueOfStr(recv_buff,"RspMsg",tmp_val_str);/*返回码  */
+  }
+
+  flog( STEP_LEVEL,"**460622 返回[%s]******************************",recv_buff);
+
+  return 0;
+}

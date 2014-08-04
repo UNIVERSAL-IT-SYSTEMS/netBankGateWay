@@ -1,0 +1,133 @@
+1、在netbank.cfg中添加
+ICS_PORT_MOBIL=30250 #移动划扣
+
+2、在trans_struct.h中添加
+/*
+ * 460501
+ * 移动划扣充值业务签约交易
+ */
+typedef struct ICS_DEF_460501_I_MOB{
+    char SigTyp[1];   /*签约类型*/
+    char VchNO[8];  /*凭证号*/
+    char ActTyp[1];  /*账号类型*/
+    char ActNo[28];   /*银行账号*/
+    char ActNam[32];   /*银行账号名称*/
+    char IdTyp[02];  /*证件类型*/
+    char IdNo[20];     /*证件号码*/
+    char CusNam[32];   /*客户姓名*/
+    char MstTel[20];    /*主手机号码*/
+    char SigTel[20];   /*签约手机号码*/
+    char SigFlg[1];  /*签约标记（主0/副1）*/
+    char PINDat[20];  /*银行交易密码*/
+}ICS_DEF_460501_I_MOB;
+
+typedef struct  ICS_DEF_460501_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char MstTel[20];  /*主手机号码*/
+    char SigTel[20];   /*签约手机号码*/
+    char LogNo[30];   /*移动返回流水号*/
+}ICS_DEF_460501_N_MOB;
+
+typedef struct ICS_DEF_460501_E_MOB{
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* */
+}ICS_DEF_460501_E_MOB;  
+
+/*
+ * 460506
+ * 移动划扣充值业务解约交易
+ */
+typedef struct ICS_DEF_460506_I_MOB{
+    char  BisTyp  [1]   ; /*交易类型1：主号捆绑解除；2：全部签约号码解除*/
+    char  ActTyp  [1]   ; /*账号类型*/
+    char  ActNo   [28]  ; /*银行账号*/
+    char  ActNam  [32]  ; /*银行账号名称*/
+    char  VchNO   [8]   ; /*凭证号*/
+    char  IdTyp   [2]   ; /*证件类型*/
+    char  IdNo    [20]  ; /*证件号码*/
+    char  CusNam  [32]  ; /*证件姓名*/
+    char  MstTel  [20]  ; /*主手机号码*/
+    char  PINDat  [20]  ; /*银行交易密码*/
+}ICS_DEF_460506_I_MOB;
+
+typedef struct  ICS_DEF_460506_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  ActTyp  [1]   ; /* 账号类型 */
+    char  ActNo   [28]  ; /*银行账号*/
+    char  IdTyp   [2]   ; /* 证件类型 */
+    char  IdNo    [20]  ; /* 证件号码 */
+    char  CusNam  [32]  ; /* 证件姓名 */
+    char  MstTel  [20]  ; /* 主手机号码 */
+}ICS_DEF_460506_N_MOB;
+
+typedef struct ICS_DEF_460506_E_MOB{
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* 错误信息 */
+}ICS_DEF_460506_E_MOB;  
+
+/*
+ * 460511
+ * 查询账户信息（嵌套）
+ */
+typedef struct ICS_DEF_460511_I_MOB{
+    char  ActNo  [21]   ; /*帐号*/
+}ICS_DEF_460511_I_MOB;
+
+typedef struct  ICS_DEF_460511_N_MOB{
+    char TmpDat[4];   /*package length*/
+    char ApCode[2];   /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char  IdTyp  [2]  ; /*证件种类*/
+    char  IdNo   [20] ; /*证件号码*/
+    char  ActNam [32] ; /*户名*/
+    char  ActSts [1]  ; /*帐户状态*/
+}ICS_DEF_460511_N_MOB;
+
+typedef struct ICS_DEF_460511_E_MOB{
+    char TmpDat[4];
+    char ApCode[2];  /*"SC"*/
+    char OFmtCd[3];  /*"D04"*/
+    char RspCod[6];  /* */
+    char InPos[4];   /*0001*/
+    char RspMsg[56]; /* 错误信息 */
+}ICS_DEF_460511_E_MOB;  
+
+3、在mid_process.c中添加
+
+          /*add 20121010 移动划扣 begin*/ 
+            case 32:    /* 移动划扣*/
+               switch(i_biz_step_id)
+               {
+                   case 1: /*移动划扣充值业务签约交易*/
+                       ret=ics_proc_460501_mob(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460501--------ret=[%d]",ret);
+                       break;
+                   case 2: /*移动划扣充值业务解约交易*/
+                       ret=ics_proc_460506_mob(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460506--------ret=[%d]",ret);
+                       break;
+                   case 3: /*查询账户信息（嵌套）*/
+                       ret=ics_proc_460511_mob(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460511--------ret=[%d]",ret);
+                       break;
+               }
+               break;
+          /*add 20121010 移动划扣 end */      
+
+4、在src/subtrans中添加
+
+  subtrans460501_mob.o  \
+  subtrans460506_mob.o  \
+  subtrans460511_mob.o

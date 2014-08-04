@@ -166,6 +166,11 @@ int ics_proc_460602_unca(char *send_buff,char *recv_buff)
   trim(tmpvalue);
   strcpy(pICS_Request->TxnAmt,tmpvalue);
 
+  memset(tmpvalue, 0, sizeof(tmpvalue));
+  getValueOfStr(send_buff,"PinBlk",tmpvalue);  /* 被充值号码 */
+  trim(tmpvalue);
+  strcpy(pICS_Request->PinBlk,tmpvalue);
+
   /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
   len=sizeof(ICS_DEF_TIA);
   for(i=0;i<len;i++)
