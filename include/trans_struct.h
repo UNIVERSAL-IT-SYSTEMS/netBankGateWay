@@ -1727,3 +1727,141 @@ typedef struct ICS_DEF_461509_E_PNTA{
     char  InPos[4];       /*0001*/
     char  RspMsg[56];     /*出错原因   */
 }ICS_DEF_461509_E_PNTA;                                
+
+
+/*
+ * 460411
+ * 
+ */
+typedef struct ICS_DEF_460411_I_EFEK{
+    char SFFS [3]; /*收费方式*/
+    char FYLX [3]; /*费用类型*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char KKZH [32]; /*扣款账户*/
+    char KKZHMC [128]; /*扣款账户名称*/
+    char BFJFBZ [1]; /*部分缴费标志*/
+    char ZWLSH [16]; /*账务流水号*/
+    char DFNY [6]; /*电费年月*/
+    char QFJE [16]; /*欠费金额*/
+    char BJ [16]; /*本金*/
+    char WYJ [16]; /*违约金*/
+    char VchTyp [3]; /*结算凭证*/
+    char VchNo [8]; /*凭证号*/
+    char BilDat [8]; /*凭证日期*/
+    char ActNo [21]; /*主账号*/
+    char PinBlk [20]; /*密码*/
+}ICS_DEF_460602_I_MOB;
+
+typedef struct  ICS_DEF_460411_N_EFEK{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char DFNY [6]; /*电费年月*/
+    char SKJE [16]; /*实扣金额*/
+    char JFJGSM [128]; /*缴费结果说明*/
+    char TckNo [12]; /*会计业务流水号*/
+}ICS_DEF_460602_N_MOB;
+
+/*
+ * 460410
+ * 
+ */
+typedef struct ICS_DEF_460410_I_EFEK{
+    char JFH [20]; /*缴费号*/
+    char DFNY [6]; /*电费年月*/
+    char CXFS [1]; /*查询方式*/
+}ICS_DEF_460602_I_MOB;
+
+typedef struct  ICS_DEF_460410_N_EFEK{
+    char  TmpDat[4];       /*package length*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char SFFS [3]; /*收费方式*/
+    char FYLX [3]; /*费用类型*/
+    char RZYHDM [4]; /*入账银行代码*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char KKZH [32]; /*扣款账户*/
+    char KKZHMC [128]; /*扣款账户名称*/
+    char BFJFBZ [1]; /*部分缴费标志*/
+    char ZWLSH [16]; /*账务流水号*/
+    char DFNY [6]; /*电费年月*/
+    char QFJE [16]; /*欠费金额*/
+    char BJ [16]; /*本金*/
+    char WYJ [16]; /*违约金*/
+}ICS_DEF_460602_N_MOB;
+
+/*
+ * 460444
+ * 
+ */
+typedef struct ICS_DEF_460444_I_EFEK_Qry{
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+}ICS_DEF_460602_I_MOB;
+
+typedef struct  ICS_DEF_460444_N_EFEK_Qry{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char BZ [128]; /*备注*/
+    char YQYYHDM [4]; /*原签约银行代码*/
+    char YQYZH [32]; /*原签约账户*/
+    char YQYZHMC [128]; /*原签约账号名称*/
+}ICS_DEF_460602_N_MOB;
+
+typedef struct ICS_DEF_460444_I_EFEK_Upd{
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YQYYHDM [4]; /*原签约银行代码*/
+    char YQYZH [32]; /*原签约账户*/
+    char YQYZHMC [128]; /*原签约账号名称*/
+    char XQYYHDM [4]; /*新签约银行代码*/
+    char XQYZH [32]; /*新签约账户*/
+    char XQYZHMC [128]; /*新签约账户名称*/
+    char ZHLX [2]; /*账户类型*/
+    char ZJLX [2]; /*证件类型*/
+    char ZJHM [32]; /*证件号码*/
+    char LXDH [20]; /*联系电话*/
+    char SJHM [20]; /*手机号码*/
+    char EMAIL [64]; /*E-MAIL*/
+    char BZ [128]; /*备注*/
+}ICS_DEF_460602_I_MOB;
+
+typedef struct  ICS_DEF_460444_N_EFEK_Upd{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+}ICS_DEF_460602_N_MOB;
+

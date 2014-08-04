@@ -283,6 +283,30 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
                break;
           /*add 20121010 移动划扣 end */
 
+          /*add 20140804 南方电网 begin*/ 
+            case 33:    /* 南方电网*/
+               switch(i_biz_step_id)
+               {
+                   case 1: /*银行发起批量查询欠费客户请求*/
+                       ret=ics_proc_460410_efek(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460410--------ret=[%d]",ret);
+                       break;
+                   case 2: /*银行代收客户欠费交易*/
+                       ret=ics_proc_460411_efek(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460411--------ret=[%d]",ret);
+                       break;
+                   case 3: /*银行查询客户信息交易*/
+                       ret=ics_proc_460444_efek_qry(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460444Q--------ret=[%d]",ret);
+                       break;
+                   case 4: /*银行增加/修改/删除客户信息交易*/
+                       ret=ics_proc_460444_efek_upd(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460444U--------ret=[%d]",ret);
+                       break;
+               }
+               break;
+          /*add 20140804 南方电网 end */
+
 	default:
 		break;
 	}
