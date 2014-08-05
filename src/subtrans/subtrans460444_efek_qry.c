@@ -251,68 +251,68 @@ RETURN:
       setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_482102_N->OFmtCd,sizeof(pICS_482102_N->OFmtCd));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
       setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->WDMC,sizeof(pICS_RESPONSE_N->WDMC));
-      setValueOfStr(recv_buff,WDMC,tmp_val_str);
+      setValueOfStr(recv_buff,"WDMC",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYLSH,sizeof(pICS_RESPONSE_N->JYLSH));
-      setValueOfStr(recv_buff,JYLSH,tmp_val_str);
+      setValueOfStr(recv_buff,"JYLSH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYRQ,sizeof(pICS_RESPONSE_N->JYRQ));
-      setValueOfStr(recv_buff,JYRQ,tmp_val_str);
+      setValueOfStr(recv_buff,"JYRQ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYSJ,sizeof(pICS_RESPONSE_N->JYSJ));
-      setValueOfStr(recv_buff,JYSJ,tmp_val_str);
+      setValueOfStr(recv_buff,"JYSJ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYLSH,sizeof(pICS_RESPONSE_N->YJYLSH));
-      setValueOfStr(recv_buff,YJYLSH,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYLSH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYRQ,sizeof(pICS_RESPONSE_N->YJYRQ));
-      setValueOfStr(recv_buff,YJYRQ,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYRQ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYSJ,sizeof(pICS_RESPONSE_N->YJYSJ));
-      setValueOfStr(recv_buff,YJYSJ,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYSJ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->QDBZ,sizeof(pICS_RESPONSE_N->QDBZ));
-      setValueOfStr(recv_buff,QDBZ,tmp_val_str);
+      setValueOfStr(recv_buff,"QDBZ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JFH,sizeof(pICS_RESPONSE_N->JFH));
-      setValueOfStr(recv_buff,JFH,tmp_val_str);
+      setValueOfStr(recv_buff,"JFH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JSHMC,sizeof(pICS_RESPONSE_N->JSHMC));
-      setValueOfStr(recv_buff,JSHMC,tmp_val_str);
+      setValueOfStr(recv_buff,"JSHMC",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YDDZ,sizeof(pICS_RESPONSE_N->YDDZ));
-      setValueOfStr(recv_buff,YDDZ,tmp_val_str);
+      setValueOfStr(recv_buff,"YDDZ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->BZ,sizeof(pICS_RESPONSE_N->BZ));
-      setValueOfStr(recv_buff,BZ,tmp_val_str);
+      setValueOfStr(recv_buff,"BZ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YQYYHDM,sizeof(pICS_RESPONSE_N->YQYYHDM));
-      setValueOfStr(recv_buff,YQYYHDM,tmp_val_str);
+      setValueOfStr(recv_buff,"YQYYHDM",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YQYZH,sizeof(pICS_RESPONSE_N->YQYZH));
-      setValueOfStr(recv_buff,YQYZH,tmp_val_str);
+      setValueOfStr(recv_buff,"YQYZH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YQYZHMC,sizeof(pICS_RESPONSE_N->YQYZHMC));
-      setValueOfStr(recv_buff,YQYZHMC,tmp_val_str);
+      setValueOfStr(recv_buff,"YQYZHMC",tmp_val_str);
 
 
 

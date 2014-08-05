@@ -33,8 +33,8 @@ int ics_proc_460411_efek(char *send_buff,char *recv_buff)
 
   ICS_DEF_TIA       *pICS_TIA;
   ICS_DEF_TOA       *pICS_TOA;
-  ICS_DEF_460410_I_EFEK  *pICS_REQUEST_I;
-  ICS_DEF_460410_N_EFEK  *pICS_RESPONSE_N;
+  ICS_DEF_460411_I_EFEK  *pICS_REQUEST_I;
+  ICS_DEF_460411_N_EFEK  *pICS_RESPONSE_N;
   ICS_DEF_DEFAULT_E  *pICS_RESPONSE_E;
 
   char      ics_send_buff[LEN_ICS_PROC_BUF];
@@ -70,8 +70,8 @@ int ics_proc_460411_efek(char *send_buff,char *recv_buff)
 
   /* STEP1-1:清理结构和变量 */
 
-  pICS_REQUEST_I=(ICS_DEF_460410_I_EFEK *)ics_request_i_buff;
-  pICS_RESPONSE_N=(ICS_DEF_460410_N_EFEK *)ics_response_n_buff;
+  pICS_REQUEST_I=(ICS_DEF_460411_I_EFEK *)ics_request_i_buff;
+  pICS_RESPONSE_N=(ICS_DEF_460411_N_EFEK *)ics_response_n_buff;
   pICS_RESPONSE_E=(ICS_DEF_DEFAULT_E *)ics_response_e_buff;
   pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
   pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
@@ -257,14 +257,14 @@ flog( STEP_LEVEL,"--482101 接收[%s]-------------------------------",send_buff);
   memcpy(ics_send_buff+offset,ics_tia_buff,len);
   offset=offset+sizeof(ICS_DEF_TIA);
 
-  len=sizeof(ICS_DEF_460410_I_EFEK);
+  len=sizeof(ICS_DEF_460411_I_EFEK);
   for(i=0;i<len;i++)
   {
     if(ics_request_i_buff[i]==0)
       ics_request_i_buff[i]=' ';
   }
   memcpy(ics_send_buff+offset,ics_request_i_buff,len);
-  offset=offset+sizeof(ICS_DEF_460410_I_EFEK);
+  offset=offset+sizeof(ICS_DEF_460411_I_EFEK);
 
   /*发往ICS需加8位报文长度在头*/
   memcpy(sLen,'\0',8);
@@ -300,7 +300,7 @@ RETURN:
     /* STEP3-1处理页面显示要素: 在这里填写的字段，就是在页面上显示的字段 */
     /* 注意，<br>是页面显示的换行符号 */
   
-    memcpy(pICS_RESPONSE_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_460410_N_EFEK));
+    memcpy(pICS_RESPONSE_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_460411_N_EFEK));
   
     /* 调用setValueOf函数填充 */
       /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/
@@ -318,60 +318,60 @@ RETURN:
       setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_482102_N->OFmtCd,sizeof(pICS_482102_N->OFmtCd));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
       setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->WDMC,sizeof(pICS_RESPONSE_N->WDMC));
-      setValueOfStr(recv_buff,WDMC,tmp_val_str);
+      setValueOfStr(recv_buff,"WDMC",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYLSH,sizeof(pICS_RESPONSE_N->JYLSH));
-      setValueOfStr(recv_buff,JYLSH,tmp_val_str);
+      setValueOfStr(recv_buff,"JYLSH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYRQ,sizeof(pICS_RESPONSE_N->JYRQ));
-      setValueOfStr(recv_buff,JYRQ,tmp_val_str);
+      setValueOfStr(recv_buff,"JYRQ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JYSJ,sizeof(pICS_RESPONSE_N->JYSJ));
-      setValueOfStr(recv_buff,JYSJ,tmp_val_str);
+      setValueOfStr(recv_buff,"JYSJ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYLSH,sizeof(pICS_RESPONSE_N->YJYLSH));
-      setValueOfStr(recv_buff,YJYLSH,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYLSH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYRQ,sizeof(pICS_RESPONSE_N->YJYRQ));
-      setValueOfStr(recv_buff,YJYRQ,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYRQ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->YJYSJ,sizeof(pICS_RESPONSE_N->YJYSJ));
-      setValueOfStr(recv_buff,YJYSJ,tmp_val_str);
+      setValueOfStr(recv_buff,"YJYSJ",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->DWBM,sizeof(pICS_RESPONSE_N->DWBM));
-      setValueOfStr(recv_buff,DWBM,tmp_val_str);
+      setValueOfStr(recv_buff,"DWBM",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JFH,sizeof(pICS_RESPONSE_N->JFH));
-      setValueOfStr(recv_buff,JFH,tmp_val_str);
+      setValueOfStr(recv_buff,"JFH",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->DFNY,sizeof(pICS_RESPONSE_N->DFNY));
-      setValueOfStr(recv_buff,DFNY,tmp_val_str);
+      setValueOfStr(recv_buff,"DFNY",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->SKJE,sizeof(pICS_RESPONSE_N->SKJE));
-      setValueOfStr(recv_buff,SKJE,tmp_val_str);
+      setValueOfStr(recv_buff,"SKJE",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->JFJGSM,sizeof(pICS_RESPONSE_N->JFJGSM));
-      setValueOfStr(recv_buff,JFJGSM,tmp_val_str);
+      setValueOfStr(recv_buff,"JFJGSM",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->TckNo,sizeof(pICS_RESPONSE_N->TckNo));
-      setValueOfStr(recv_buff,TckNo,tmp_val_str);
+      setValueOfStr(recv_buff,"TckNo",tmp_val_str);
 
 
     /* STEP3-2 处理页面隐含要素: 这里填写的字段，就是在页面作为隐含input的要素 */

@@ -307,7 +307,7 @@ RETURN:
       setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_482102_N->OFmtCd,sizeof(pICS_482102_N->OFmtCd));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
       setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
 
 
