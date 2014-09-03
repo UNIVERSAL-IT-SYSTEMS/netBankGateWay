@@ -34,15 +34,19 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
 
   ICS_DEF_TIA       *pICS_TIA;
   ICS_DEF_TOA       *pICS_TOA;
-  ICS_DEF_461509_I_PNTA  *pICS_461509_I;
-  ICS_DEF_461509_N_PNTA  *pICS_461509_N;
-  ICS_DEF_461509_E_PNTA  *pICS_461509_E;
+  typedef ICS_DEF_461509_I_PNTA ICS_DEF_REQUEST;
+  typedef ICS_DEF_461509_N_PNTA ICS_DEF_RESPONSE_N;
+  typedef ICS_DEF_DEFAULT_E ICS_DEF_RESPONSE_E;
+  ICS_DEF_REQUEST  *pICS_REQUEST_I;
+  ICS_DEF_RESPONSE_N  *pICS_RESPONSE_N;
+  ICS_DEF_RESPONSE_E  *pICS_RESPONSE_E;
+
 
   char      ics_send_buff[LEN_ICS_PROC_BUF];
   char      ics_recv_buff[LEN_ICS_PROC_BUF];
-  char      ics_461509i_buff[52];
-  char      ics_461509n_buff[779];
-  char      ics_461509e_buff[75];
+  char      ics_request_i_buff[52];
+  char      ics_response_n_buff[779];
+  char      ics_response_e_buff[75];
 
   char      ics_tia_buff[171];
   char      ics_toa_buff[114];
@@ -52,6 +56,7 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   char      display_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[300];   /*从上传报文中取得的某项值*/
 
+  char      s_TxnCod[7] = "461503";
   char			s_CDNO[LEN_CDNO]; /* 卡号 */
   char			s_PSWD[20]; /* 密码 */
 
@@ -71,17 +76,17 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
 
   /* STEP1-1:清理结构和变量 */
 
-  pICS_461509_I=(ICS_DEF_461509_I_PNTA *)ics_461509i_buff;
-  pICS_461509_N=(ICS_DEF_461509_N_PNTA *)ics_461509n_buff;
-  pICS_461509_E=(ICS_DEF_461509_E_PNTA *)ics_461509e_buff;
+  pICS_REQUEST_I=(ICS_DEF_REQUEST *)ics_request_i_buff;
+  pICS_RESPONSE_N=(ICS_DEF_RESPONSE_N *)ics_response_n_buff;
+  pICS_RESPONSE_E=(ICS_DEF_RESPONSE_E *)ics_response_e_buff;
   pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
   pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
 
   memset(ics_send_buff,'\0',sizeof(ics_send_buff));
   memset(ics_recv_buff,'\0',sizeof(ics_recv_buff));
-  memset(ics_461509i_buff,'\0',sizeof(ics_461509i_buff));
-  memset(ics_461509n_buff,'\0',sizeof(ics_461509n_buff));
-  memset(ics_461509e_buff,'\0',sizeof(ics_461509e_buff));
+  memset(ics_request_i_buff,'\0',sizeof(ics_request_i_buff));
+  memset(ics_response_n_buff,'\0',sizeof(ics_response_n_buff));
+  memset(ics_response_e_buff,'\0',sizeof(ics_response_e_buff));
   memset(ics_tia_buff,'\0',sizeof(ics_tia_buff));
   memset(ics_toa_buff,'\0',sizeof(ics_toa_buff));
 
@@ -102,8 +107,8 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");            /* CICS交易代码 */
-  strcpy(pICS_TIA->TTxnCd,"461509");
-  strcpy(pICS_TIA->FeCod,"461509");
+  memcpy(pICS_TIA->TTxnCd, s_TxnCod, sizeof(pICS_TIA->TTxnCd));
+  memcpy(pICS_TIA->FeCod, s_TxnCod, sizeof(pICS_TIA->FeCod));
   strcpy(pICS_TIA->TrmNo,"DVID");
 
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
@@ -141,41 +146,41 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   strcpy(pICS_TIA->Fil," ");
 
   /* STEP1-3: 填上传串中的固定元素值*/
-  /* 格式: strcpy(pICS_461509_I->RsFld1,"P001"); 第三方交易码(查询)*/ 
+  /* 格式: strcpy(pICS_REQUEST_I->RsFld1,"P001"); 第三方交易码(查询)*/ 
   /* STEP1-4: 从上传报文中获得其余值-用getValueOf函数*/
  
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"AdnCod",tmpvalue);       /* 请求书编号 */
   trim(tmpvalue);
-  strcpy(pICS_461509_I->AdnCod,tmpvalue);
+  strcpy(pICS_REQUEST_I->AdnCod,tmpvalue);
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"PBilTyp",tmpvalue);      /*打印票据种类*/    
   trim(tmpvalue);
-  strcpy(pICS_461509_I->PBilTyp,tmpvalue);
+  strcpy(pICS_REQUEST_I->PBilTyp,tmpvalue);
   
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"PBilNo",tmpvalue);       /*打印票据编号*/    
   trim(tmpvalue);
-  strcpy(pICS_461509_I->PBilNo,tmpvalue);
+  strcpy(pICS_REQUEST_I->PBilNo,tmpvalue);
   
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"HndFlg",tmpvalue);       /*手工票标志*/    
   trim(tmpvalue);
-  strcpy(pICS_461509_I->HndFlg,tmpvalue);
+  strcpy(pICS_REQUEST_I->HndFlg,tmpvalue);
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"UpdAdnFg",tmpvalue);     /*0正常获取应收信息 1更新已存应收信息*/    
   trim(tmpvalue);
-  strcpy(pICS_461509_I->UpdAdnFg,tmpvalue);
+  strcpy(pICS_REQUEST_I->UpdAdnFg,tmpvalue);
   
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"RipFlg",tmpvalue);       /*撕定额票标志 0否 1是*/  
   trim(tmpvalue);
-  strcpy(pICS_461509_I->RipFlg,tmpvalue);
+  strcpy(pICS_REQUEST_I->RipFlg,tmpvalue);
 
   /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
   len=sizeof(ICS_DEF_TIA);
@@ -215,14 +220,14 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   memcpy(ics_send_buff+offset,ics_tia_buff,len);
   offset=offset+sizeof(ICS_DEF_TIA);
 
-  len=sizeof(ICS_DEF_461509_I_PNTA);
+  len=sizeof(ICS_DEF_REQUEST);
   for(i=0;i<len;i++)
   {
-    if(ics_461509i_buff[i]==0)
-      ics_461509i_buff[i]=' ';
+    if(ics_request_i_buff[i]==0)
+      ics_request_i_buff[i]=' ';
   }
-  memcpy(ics_send_buff+offset,ics_461509i_buff,len);
-  offset=offset+sizeof(ICS_DEF_461509_I_PNTA);
+  memcpy(ics_send_buff+offset,ics_request_i_buff,len);
+  offset=offset+sizeof(ICS_DEF_REQUEST);
 
   /*发往ICS需加8位报文长度在头*/
   memcpy(sLen,'\0',8);
@@ -260,7 +265,7 @@ RETURN:
     /* STEP3-1处理页面显示要素: 在这里填写的字段，就是在页面上显示的字段 */
     /* 注意，<br>是页面显示的换行符号 */
   
-      memcpy(pICS_461509_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_461509_N_PNTA));
+      memcpy(pICS_RESPONSE_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_RESPONSE_N));
   
       /* 调用setValueOf函数填充 */
       /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/
@@ -269,48 +274,93 @@ RETURN:
       setValueOfStr(recv_buff,"MGID","000000");  /*返回码*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->TmpDat,sizeof(pICS_461509_N->TmpDat));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->TmpDat,sizeof(pICS_RESPONSE_N->TmpDat));
       setValueOfStr(recv_buff,"TmpDat",tmp_val_str);/*包体长度*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->ApCode,sizeof(pICS_461509_N->ApCode));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->ApCode,sizeof(pICS_RESPONSE_N->ApCode));
       setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->LevFlg,sizeof(pICS_461509_N->LevFlg));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
+      setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AdnCod,sizeof(pICS_RESPONSE_N->AdnCod));
+      setValueOfStr(recv_buff,"AdnCod",tmp_val_str);/*文书编号*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->PBilTyp,sizeof(pICS_RESPONSE_N->PBilTyp));
+      setValueOfStr(recv_buff,"PBilTyp",tmp_val_str);/*打印票据种类*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->PBilNo,sizeof(pICS_RESPONSE_N->PBilNo));
+      setValueOfStr(recv_buff,"PBilNo",tmp_val_str);/*打印票据编号*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->LevFlg,sizeof(pICS_RESPONSE_N->LevFlg));
       setValueOfStr(recv_buff,"LevFlg",tmp_val_str);/*征收方式 1直接缴款 2集中汇款*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->DitCod,sizeof(pICS_461509_N->DitCod));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->DitCod,sizeof(pICS_RESPONSE_N->DitCod));
       setValueOfStr(recv_buff,"DitCod",tmp_val_str);/*行政区划*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->ColUntCd,sizeof(pICS_461509_N->ColUntCd));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->ColUntCd,sizeof(pICS_RESPONSE_N->ColUntCd));
       setValueOfStr(recv_buff,"ColUntCd",tmp_val_str);/*执收单位编码*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->ColUntNm,sizeof(pICS_461509_N->ColUntNm));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->ColUntNm,sizeof(pICS_RESPONSE_N->ColUntNm));
       setValueOfStr(recv_buff,"ColUntNm",tmp_val_str);/*执收单位名称*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->CsgUntNm,sizeof(pICS_461509_N->CsgUntNm));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->CsgUntNm,sizeof(pICS_RESPONSE_N->CsgUntNm));
       setValueOfStr(recv_buff,"CsgUntNm",tmp_val_str);/*执罚单位名称*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->XPayNam,sizeof(pICS_461509_N->XPayNam));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->XPayNam,sizeof(pICS_RESPONSE_N->XPayNam));
       setValueOfStr(recv_buff,"XPayNam",tmp_val_str);/*当事人*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->XGatNam,sizeof(pICS_461509_N->XGatNam));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->XGatNam,sizeof(pICS_RESPONSE_N->XGatNam));
       setValueOfStr(recv_buff,"XGatNam",tmp_val_str);/*收款人名称*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->AdnAmt,sizeof(pICS_461509_N->AdnAmt));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AdnSmr,sizeof(pICS_RESPONSE_N->AdnSmr));
+      setValueOfStr(recv_buff,"AdnSmr",tmp_val_str);/*违法信息备注*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AdnAmt,sizeof(pICS_RESPONSE_N->AdnAmt));
       setValueOfStr(recv_buff,"AdnAmt",tmp_val_str);/*应收总金额*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_N->AdnSmr,sizeof(pICS_461509_N->AdnSmr));
-      setValueOfStr(recv_buff,"AdnSmr",tmp_val_str);/*违法信息备注*/
+      memcpy(tmp_val_str,pICS_RESPONSE_N->FinAccIn,sizeof(pICS_RESPONSE_N->FinAccIn));
+      setValueOfStr(recv_buff,"FinAccIn",tmp_val_str);/*入账帐号*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->PntAmt,sizeof(pICS_RESPONSE_N->PntAmt));
+      setValueOfStr(recv_buff,"PntAmt",tmp_val_str);/*非税收入金额*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AgtAmt,sizeof(pICS_RESPONSE_N->AgtAmt));
+      setValueOfStr(recv_buff,"AgtAmt",tmp_val_str);/*违法信息备注*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AgtFlg,sizeof(pICS_RESPONSE_N->AgtFlg));
+      setValueOfStr(recv_buff,"AgtFlg",tmp_val_str);/*违法信息备注*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->RgnFlg,sizeof(pICS_RESPONSE_N->RgnFlg));
+      setValueOfStr(recv_buff,"RgnFlg",tmp_val_str);/*违法信息备注*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->AdnTyp,sizeof(pICS_RESPONSE_N->AdnTyp));
+      setValueOfStr(recv_buff,"AdnTyp",tmp_val_str);/*违法信息备注*/
+
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_RESPONSE_N->RecNum,sizeof(pICS_RESPONSE_N->RecNum));
+      setValueOfStr(recv_buff,"RecNum",tmp_val_str);/*违法信息备注*/
+
 
       /* STEP3-2 处理页面隐含要素: 这里填写的字段，就是在页面作为隐含input的要素 */
       /* 注意，1.这里设置参数的顺序必须和数据库中参数的顺序一致，否则回出错！ 
@@ -320,12 +370,12 @@ RETURN:
   else
   { /*失败*/
       /*获得错误返回包*/
-      memcpy(pICS_461509_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_461509_E_PNTA));
+      memcpy(pICS_RESPONSE_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_RESPONSE_E));
   
       /* 调用setValueOf函数填充 */
       /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/
       /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_E->RspCod,sizeof(pICS_461509_E->RspCod));
+      memcpy(tmp_val_str,pICS_RESPONSE_E->RspCod,sizeof(pICS_RESPONSE_E->RspCod));
       setValueOfStr(recv_buff,"RspCod",tmp_val_str);*//*返回码       */
 
       /* 手机银行返回参数 */
@@ -336,12 +386,12 @@ RETURN:
 
       /* 手机银行返回参数 */
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_E->RspMsg,sizeof(pICS_461509_E->RspMsg));
+      memcpy(tmp_val_str,pICS_RESPONSE_E->RspMsg,sizeof(pICS_RESPONSE_E->RspMsg));
       setValueOfStr(recv_buff,"RspMsg",tmp_val_str);/*返回码       */
 
       /* 个人网银返回参数 */
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_461509_E->RspMsg,sizeof(pICS_461509_E->RspMsg));
+      memcpy(tmp_val_str,pICS_RESPONSE_E->RspMsg,sizeof(pICS_RESPONSE_E->RspMsg));
       setValueOfStr(recv_buff,"PB_Return_Code_Msg",tmp_val_str);/*返回码       */
   }
   flog( STEP_LEVEL,"**461509 返回[%s]******************************",recv_buff);

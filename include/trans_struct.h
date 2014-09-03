@@ -1559,23 +1559,85 @@ typedef struct  ICS_DEF_460604_N_MOB{
     char TxnAmt[10]  ; /*充值金额*/
 }ICS_DEF_460604_N_MOB;
 
+/*
+ * 460621
+ * 联通缴费前查询
+ */
+typedef struct ICS_DEF_460621_I{
+    char BusiType[1];   /*业务类型*/
+    char TelNo[20];     /*付费账号，电话号码*/
+    char ZdanNy[6];  /*账单月份*/
+}ICS_DEF_460621_I;
+
+
+typedef struct ICS_DEF_460621_N{
+    char TmpDat[4];      /*package length*/ 
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char FfNo[20];   /*交易金额*/
+    char MonSum[10];   /*交易日期时间*/
+ }ICS_DEF_460621_N;
+
+typedef struct ICS_DEF_460621_E{
+    char TmpDat[4];     /*package length*/
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char  RspCod[6];    /* */
+    char InPos[4];     /*0001*/
+    char RspMsg[56];/*出错原因*/
+}ICS_DEF_460621_E;
+/*
+ * 460622
+ * 联通缴费
+ */
+typedef struct ICS_DEF_460622_I{
+    char BusiType[1];   /*业务类型*/
+    char TCusId[6];     /*账单月份*/
+    char TCusNm[20];  
+    char MonSum[10];
+    char IdType[2];
+    char IdNo[32];
+    char ActTpe[1];
+    char ActNo[32];
+    char PinBlk[20];
+    char ActNam[32];
+}ICS_DEF_460622_I;
+
+
+typedef struct ICS_DEF_460622_N{
+    char TmpDat[4];      /*package length*/ 
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char TransSeq[20];   /*银行流水*/
+    char OppTransSeq[20];   /*联通流水*/
+ }ICS_DEF_460622_N;
+
+typedef struct ICS_DEF_460622_E{
+    char TmpDat[4];     /*package length*/
+    char ApCode[2];     /*SC*/
+    char OFmtCd[3];     /*D04*/
+    char  RspCod[6];    /* */
+    char InPos[4];     /*0001*/
+    char RspMsg[56];/*出错原因*/
+}ICS_DEF_460622_E;
+
 
 /*
  * 461501
  * 查询 单笔非税应收信息
  * 非税业务广州
  */
-typedef struct ICS_DEF_461501_I_PNTA{
+typedef struct {
     char AdnCod[20]   ; /*通知书编号*/
     char PBilTyp[10]  ; /*打印票据种类*/
     char PBilNo[20]   ; /*打印票据编号*/
-    char HndFlg[1]    ; /*手写机打标志*/
-    char UpdAdnFg[1]  ; /*0=正常获取 1=刷新获取*/  
+    char HndFlg[1]    ; /*通知书填写方式*/
+    char UpdAdnFg[1]  ; /*查询刷新标识*/  
     char RipFlg[1]    ; /*撕定额票标志 0否 1是*/
     char DitCod[6]    ; /*行政区划*/
 }ICS_DEF_461501_I_PNTA;
 
-typedef struct ICS_DEF_461501_N_PNTA{
+typedef struct {
 	   char    TmpDat[4];      /*长度       */
      char    ApCode[2];     /*SC         */
      char    OFmtCd[3];      /*D04        */
@@ -1605,51 +1667,34 @@ typedef struct ICS_DEF_461501_N_PNTA{
 		 char    AgtFlg   [1];   /*代收标识*/
 		 char    RgnFlg   [1];   /*区域标识*/
 		 char    AdnTyp   [10];  /*通知书种类*/
+		 char    RecNum   [2];   /*循环次数*/
 }ICS_DEF_461501_N_PNTA;
-     
-typedef struct ICS_DEF_461501_E_PNTA{
-    char  TmpDat[4];    /*长度       */
-    char  ApCode1[2];   /*SC         */
-    char  OFmtCd[3];    /*D04        */
-    char  RspCod[6];    /*错误码     */
-    char  InPos[4];     /*0001*/
-    char  RspMsg[56];   /*出错原因   */
-}ICS_DEF_461501_E_PNTA; 
      
 /*   
  * 461502
  * 扣款 单笔非税扣款交易,同时也是交通罚款扣款交易
  * 非税业务广州
  */  
-typedef struct ICS_DEF_461502_I_PNTA{   
+typedef struct {   
 		char   AdnCod[20];			 /*通知书编号*/                               				
 		char   AgtFlg[1];			   /*代收标识*/                                 		
 		char   OActFg[1]; 			 /*2存折 4太平洋借记卡 付款账户性质*/                             		
-		char   TxnAmt[15];			 /*应收金额*/                                               		
-		char   HiActNo[21];		   /*银行收款账号*/                            			
+		char   AdnAmt[15];			 /*应收金额*/                                               		
+		char   FinAccIn[21];		 /*银行收款账号*/                            			
 		char   HoActNo[21];		   /*银行扣款账号*/                            		
 		char   HoActNm[60];		   /*银行扣款户名*/                            			
 		char   VchTyp[3];			   /*凭证种类*/                                 	
 		char   VchNo[30];			   /*凭证号码 */                                		
 		char   UdwDat[8];			   /*签发日期 */                                				
 		char   CclNo[12]; 			 /*销账号*/                                   				
-		char   ThdKnd[1];	       /*通知书性质 1普通单 2汇总单 3交罚单 4批扣*/ 
+		char   AdnKnd[1];	       /*通知书性质 1普通单 2汇总单 3交罚单 4批扣*/ 
 }ICS_DEF_461502_I_PNTA;
      
-typedef struct ICS_DEF_461502_N_PNTA{
+typedef struct {
     char  TmpDat[4];        /*package length*/
     char  ApCode[2];        /*SC*/
     char  OFmtCd[3];        /*D04*/
 }ICS_DEF_461502_N_PNTA;
-
-typedef struct ICS_DEF_461502_E_PNTA{
-    char  TmpDat[4];       /*长度       */
-    char  ApCode1[2];      /*SC         */
-    char  OFmtCd[3];       /*D04        */
-    char  RspCod[6];       /*错误码     */
-    char  InPos[4];        /*0001*/
-    char  RspMsg[56];      /*出错原因   */
-}ICS_DEF_461502_E_PNTA;
       
       
  /*   
@@ -1657,28 +1702,17 @@ typedef struct ICS_DEF_461502_E_PNTA{
  * 上送 单笔非税上送财政交易 ,同时也是交通罚款上送交易      
  * 非税业务广州
  */   
-typedef struct ICS_DEF_461503_I_PNTA{   
+typedef struct {   
 		char  AdnKnd[1];			/*通知书性质 1普通单 2汇总单 3交罚单 4批量扣款*/                               				
-		char  AdnCod[40];			/*请求书编号*/                                 		
+		char  AdnCod[20];			/*请求书编号*/                                 		
 		char  RgnFlg[1]; 			/*区域标识 0区县级 1市级*/                             		
 }ICS_DEF_461503_I_PNTA;
       
-typedef struct ICS_DEF_461503_N_PNTA{
+typedef struct {
     char  TmpDat[4];       /*package length*/
     char  ApCode[2];       /*SC*/
     char  OFmtCd[3];       /*D04*/
 }ICS_DEF_461503_N_PNTA;    
-     
-typedef struct ICS_DEF_461503_E_PNTA{
-    char   TmpDat[4];      /*长度       */
-    char   ApCode1[2];     /*SC         */
-    char   OFmtCd[3];      /*D04        */
-    char   RspCod[6];      /*错误码     */
-    char   InPos[4];       /*0001*/
-    char   RspMsg[56];     /*出错原因   */
-}ICS_DEF_461503_E_PNTA;
-     
-     
      
      
 /*   
@@ -1686,7 +1720,7 @@ typedef struct ICS_DEF_461503_E_PNTA{
  * 交通罚款应收信息查询
  * 交通罚款业务--广州
  */  
-typedef struct ICS_DEF_461509_I_PNTA{   
+typedef struct {   
 		char AdnCod[20]   		  ;      /* 文书编号                               */        				
 		char PBilTyp[10]  		  ;      /* 打印票据种类                           */
 		char PBilNo[20]   		  ;      /* 打印票据编号                           */
@@ -1695,7 +1729,7 @@ typedef struct ICS_DEF_461509_I_PNTA{
 		char RipFlg[1]          ;      /* 撕定额票标志 0否 1是                   */
 }ICS_DEF_461509_I_PNTA;                                                     
                                                                            
-typedef struct ICS_DEF_461509_N_PNTA{
+typedef struct {
 	  char  TmpDat[4];     /*package length*/
     char  ApCode[2];     /*SC*/
     char  OFmtCd[3];     /*D04*/
@@ -1717,13 +1751,176 @@ typedef struct ICS_DEF_461509_N_PNTA{
     char  AgtFlg[1]     ;/*代收标识     */
     char  RgnFlg[1]     ;/*区域标识     */
     char  AdnTyp[10]    ;/*通知书种类   */
+    char  RecNum[2]     ;/*循环次数     */
 }ICS_DEF_461509_N_PNTA;   
-     
-typedef struct ICS_DEF_461509_E_PNTA{
-    char  TmpDat[4];      /*长度       */
-    char  ApCode1[2];     /*SC         */
-    char  OFmtCd[3];      /*D04        */
-    char  RspCod[6];      /*错误码     */ 
-    char  InPos[4];       /*0001*/
-    char  RspMsg[56];     /*出错原因   */
-}ICS_DEF_461509_E_PNTA;                                
+
+
+/*   
+ * 488010
+ * 对私账户密码校验交易
+ * 交通罚款业务--广州
+ */  
+typedef struct {   
+    char AccFlg[1]       ;      /* 账户类型*/
+    char ActNo[21]       ;      /* 账号*/
+    char CcyCod[3]       ;      /* 币种*/
+    char ChkPin[1]       ;      /* 验密标识*/
+    char Passwd[20]       ;      /* 密码*/
+    char BokSeq[5]       ;      /* 一本通帐户序号*/
+    char JJCod [3]       ;      /* 卡外币JJCod*/
+}ICS_DEF_488010_I_PNTA;                                                     
+                                                                           
+typedef struct {
+	  char  TmpDat[4];     /*package length*/
+    char  ApCode[2];     /*SC*/
+    char  OFmtCd[3];     /*D04*/
+    char sjcd[4]       ;      /* 数据长度*/
+    char sjgs[5]       ;      /* 数据格式*/
+    char ActSts[1]       ;      /* 账户状态*/
+    char ActNam[60]       ;      /* 账户名*/
+    char ActBal[15]       ;      /* 余额*/
+    char ActIdTp[2]       ;      /* 证件类型*/
+    char ActIdNo[30]       ;      /* 证件号码*/
+    char ActVchNo[8]       ;      /* 存折凭证号码*/
+    char ComTyp[2]       ;      /* 对公账户类型*/
+}ICS_DEF_488010_N_PNTA;   
+
+
+/*
+ * 460411
+ * 
+ */
+typedef struct ICS_DEF_460411_I_EFEK{
+    char SFFS [3]; /*收费方式*/
+    char FYLX [3]; /*费用类型*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char KKZH [32]; /*扣款账户*/
+    char KKZHMC [128]; /*扣款账户名称*/
+    char BFJFBZ [1]; /*部分缴费标志*/
+    char ZWLSH [16]; /*账务流水号*/
+    char DFNY [6]; /*电费年月*/
+    char QFJE [16]; /*欠费金额*/
+    char BJ [16]; /*本金*/
+    char WYJ [16]; /*违约金*/
+    char VchTyp [3]; /*结算凭证*/
+    char VchNo [8]; /*凭证号*/
+    char BilDat [8]; /*凭证日期*/
+    char ActNo [21]; /*主账号*/
+    char PinBlk [20]; /*密码*/
+}ICS_DEF_460411_I_EFEK;
+
+typedef struct  ICS_DEF_460411_N_EFEK{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char DFNY [6]; /*电费年月*/
+    char SKJE [16]; /*实扣金额*/
+    char JFJGSM [128]; /*缴费结果说明*/
+    char TckNo [12]; /*会计业务流水号*/
+}ICS_DEF_460411_N_EFEK;
+
+/*
+ * 460410
+ * 
+ */
+typedef struct ICS_DEF_460410_I_EFEK{
+    char JFH [20]; /*缴费号*/
+    char DFNY [6]; /*电费年月*/
+    char CXFS [1]; /*查询方式*/
+}ICS_DEF_460410_I_EFEK;
+
+typedef struct  ICS_DEF_460410_N_EFEK{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char SFFS [3]; /*收费方式*/
+    char FYLX [3]; /*费用类型*/
+    char RZYHDM [4]; /*入账银行代码*/
+    char DWBM [8]; /*单位编码*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char KKZH [32]; /*扣款账户*/
+    char KKZHMC [128]; /*扣款账户名称*/
+    char BFJFBZ [1]; /*部分缴费标志*/
+    char ZWLSH [16]; /*账务流水号*/
+    char DFNY [6]; /*电费年月*/
+    char QFJE [16]; /*欠费金额*/
+    char BJ [16]; /*本金*/
+    char WYJ [16]; /*违约金*/
+}ICS_DEF_460410_N_EFEK;
+
+/*
+ * 460444
+ * 
+ */
+typedef struct ICS_DEF_460444_I_EFEK_Qry{
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+}ICS_DEF_460444_I_EFEK_Qry;
+
+typedef struct  ICS_DEF_460444_N_EFEK_Qry{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+    char WDMC [64]; /*网点名称*/
+    char JYLSH [24]; /*交易流水号*/
+    char JYRQ [8]; /*交易日期*/
+    char JYSJ [6]; /*交易时间*/
+    char YJYLSH [24]; /*原交易流水号*/
+    char YJYRQ [8]; /*原交易日期*/
+    char YJYSJ [6]; /*原交易时间*/
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YDDZ [128]; /*用电地址*/
+    char BZ [128]; /*备注*/
+    char YQYYHDM [4]; /*原签约银行代码*/
+    char YQYZH [32]; /*原签约账户*/
+    char YQYZHMC [128]; /*原签约账号名称*/
+}ICS_DEF_460444_N_EFEK_Qry;
+
+typedef struct ICS_DEF_460444_I_EFEK_Upd{
+    char QDBZ [1]; /*签订标志*/
+    char JFH [20]; /*缴费号*/
+    char JSHMC [64]; /*结算户名称*/
+    char YQYYHDM [4]; /*原签约银行代码*/
+    char YQYZH [32]; /*原签约账户*/
+    char YQYZHMC [128]; /*原签约账号名称*/
+    char XQYYHDM [4]; /*新签约银行代码*/
+    char XQYZH [32]; /*新签约账户*/
+    char XQYZHMC [128]; /*新签约账户名称*/
+    char ZHLX [2]; /*账户类型*/
+    char ZJLX [2]; /*证件类型*/
+    char ZJHM [32]; /*证件号码*/
+    char LXDH [20]; /*联系电话*/
+    char SJHM [20]; /*手机号码*/
+    char EMAIL [64]; /*E-MAIL*/
+    char BZ [128]; /*备注*/
+}ICS_DEF_460444_I_EFEK_Upd;
+
+typedef struct  ICS_DEF_460444_N_EFEK_Upd{
+    char  TmpDat[4];       /*package length*/
+    char ApCode [2]; /*SC*/
+    char OFmtCd [3]; /*D04*/
+}ICS_DEF_460444_N_EFEK_Upd;
+

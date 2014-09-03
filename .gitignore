@@ -1,7 +1,8 @@
 *.o
 *.test
 *.tar
-nohup.out
+*.out
+*test*
 /config/host.cfg.*
 /include/trans_struct.h.*
 /src/20110819sc

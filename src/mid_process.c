@@ -229,10 +229,10 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
 					ret=ics_proc_482102_tc(send_buff,recv_buff);break;
 					flog(STEP_LEVEL,"--------482102--------ret=[%d]",ret);
 					break;				
-				case 3: /*体彩购彩交易    */
+				/*case 3: 体彩购彩交易
 					ret=ics_proc_482101_tc(send_buff,recv_buff);break;
 					flog(STEP_LEVEL,"--------482133--------ret=[%d]",ret);
-					break;
+					break;    */
 				/*case 4: 
 					ret=ics_proc_482134(send_buff,recv_buff);break;
 					flog(STEP_LEVEL,"--------482134--------ret=[%d]",ret);
@@ -247,6 +247,7 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
 					break;*/
 			}		
 		break;
+		  
 
    /*add 20111010 电费缴纳 begin*/
      case 31:    /* 电费缴纳*/
@@ -282,7 +283,89 @@ flog(STEP_LEVEL,"i_biz_id=[%d] step_id=[%d] [%s]",i_biz_id,i_biz_step_id,send_bu
                }
                break;
           /*add 20121010 移动划扣 end */
-
+            case 33:    /* 联通直联*/
+            switch(i_biz_step_id)
+            {
+                case 1: /*被充值号码验证(010201)*/
+                    ret=ics_proc_460601_unca(send_buff,recv_buff);
+                    break;
+                case 2: /*给被充值号码充值(010202)*/
+                    ret=ics_proc_460602_unca(send_buff,recv_buff);
+                    break;
+                /*case 3: 通过卡号查询缴费会计流水号
+                    ret=ics_proc_460606_unca(send_buff,recv_buff);break;
+                case 4: 缴费记录查询(010204)
+                    ret=ics_proc_460604_unca(send_buff,recv_buff);break;*/
+            }
+            break;
+        /*add 20121119 联通直联 end */
+		 /*add 20140605 联通缴费 begin*/ 
+        case 35:    /* 联通缴费*/
+            switch(i_biz_step_id)
+            {
+                case 1: /*查询*/
+                	  flog(STEP_LEVEL, "mid_process.c -->开始进入分行联通缴费查询交易啦!");
+                    ret=ics_proc_460621_uncc(send_buff,recv_buff);break;
+                    flog(STEP_LEVEL,"--------460621--------ret=[%d]",ret);
+                    break;
+                case 2: /*缴费*/
+                    ret=ics_proc_460622_uncc(send_buff,recv_buff);break;
+                    flog(STEP_LEVEL,"--------460622--------ret=[%d]",ret);
+                    break;
+            }
+        break;
+        /*add 20140605 联通缴费 end */ 
+          /*add 20140804 南方电网 begin*/ 
+            case 36:    /* 南方电网*/
+               switch(i_biz_step_id)
+               {
+                   case 1: /*银行发起批量查询欠费客户请求*/
+                       ret=ics_proc_460410_efek(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460410--------ret=[%d]",ret);
+                       break;
+                   case 2: /*银行代收客户欠费交易*/
+                       ret=ics_proc_460411_efek(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460411--------ret=[%d]",ret);
+                       break;
+                   case 3: /*银行查询客户信息交易*/
+                       ret=ics_proc_460444_efek_qry(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460444Q--------ret=[%d]",ret);
+                       break;
+                   case 4: /*银行增加/修改/删除客户信息交易*/
+                       ret=ics_proc_460444_efek_upd(send_buff,recv_buff);break;
+                       flog(STEP_LEVEL,"--------460444U--------ret=[%d]",ret);
+                       break;
+               }
+               break;
+          /*add 20140804 南方电网 end */
+           
+        /*add 20130225 非税业务 begin*/
+        case 34:    /* 广州市非税业务*/
+            switch(i_biz_step_id)
+            {
+                case 1: /*普通非税应收信息查询*/
+                    ret=ics_proc_461501_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461501--------ret=[%d]",ret);
+                    break;
+                case 2: /*交通罚款应收信息查询*/
+                    ret=ics_proc_461509_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461509--------ret=[%d]",ret);
+                    break;
+                case 3: /*非税收缴扣款*/
+                    ret=ics_proc_461502_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461502--------ret=[%d]",ret);
+                    break;
+                case 4: /*上报登记非税已收缴*/
+                    ret=ics_proc_461503_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------461503--------ret=[%d]",ret);
+                    break;
+                case 5: /*对私账户密码校验交易*/
+                    ret=ics_proc_488010_pnta(send_buff,recv_buff);
+                    flog(STEP_LEVEL,"--------488010--------ret=[%d]",ret);
+                    break;
+            }
+            break;
+        /*add 20130225 非税业务 end */
 	default:
 		break;
 	}
