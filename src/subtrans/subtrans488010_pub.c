@@ -34,9 +34,12 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
 
   ICS_DEF_TIA       *pICS_TIA;
   ICS_DEF_TOA       *pICS_TOA;
-  ICS_DEF_488010_I_PNTA  *pICS_REQUEST_I;
-  ICS_DEF_488010_N_PNTA  *pICS_RESPONSE_N;
-  ICS_DEF_DEFAULT_E  *pICS_RESPONSE_E;
+  typedef ICS_DEF_488010_I_PNTA ICS_DEF_REQUEST;
+  typedef ICS_DEF_488010_N_PNTA ICS_DEF_RESPONSE_N;
+  typedef ICS_DEF_DEFAULT_E ICS_DEF_RESPONSE_E;
+  ICS_DEF_REQUEST  *pICS_REQUEST_I;
+  ICS_DEF_RESPONSE_N  *pICS_RESPONSE_N;
+  ICS_DEF_RESPONSE_E  *pICS_RESPONSE_E;
 
   char      ics_send_buff[LEN_ICS_PROC_BUF];
   char      ics_recv_buff[LEN_ICS_PROC_BUF];
@@ -72,9 +75,9 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
 
   /* STEP1-1:清理结构和变量 */
 
-  pICS_REQUEST_I=(ICS_DEF_488010_I_PNTA *)ics_request_buff;
-  pICS_RESPONSE_N=(ICS_DEF_488010_N_PNTA *)ics_response_n_buff;
-  pICS_RESPONSE_E=(ICS_DEF_DEFAULT_E *)ics_response_e_buff;
+  pICS_REQUEST_I=(ICS_DEF_REQUEST *)ics_request_buff;
+  pICS_RESPONSE_N=(ICS_DEF_RESPONSE_N *)ics_response_n_buff;
+  pICS_RESPONSE_E=(ICS_DEF_RESPONSE_E *)ics_response_e_buff;
   pICS_TIA=(ICS_DEF_TIA *)ics_tia_buff;
   pICS_TOA=(ICS_DEF_TOA *)ics_toa_buff;
 
@@ -103,8 +106,8 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");            /* CICS交易代码 */
-  memcpy(pICS_TIA->TTxnCd, s_TxnCod, sizeof(pICS_TIA->TTxnCd));
-  memcpy(pICS_TIA->FeCod, s_TxnCod, sizeof(pICS_TIA->FeCod));
+  strcpy(pICS_TIA->TTxnCd, s_TxnCod);
+  strcpy(pICS_TIA->FeCod, s_TxnCod);
   strcpy(pICS_TIA->TrmNo,"DVID");
 
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
@@ -167,9 +170,9 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
   strcpy(pICS_REQUEST_I->ChkPin,tmpvalue);
 
   memset(tmpvalue, 0, sizeof(tmpvalue));
-  getValueOfStr(send_buff,"Passwd",tmpvalue);
+  getValueOfStr(send_buff,"password",tmpvalue);
   trim(tmpvalue);
-  strcpy(pICS_REQUEST_I->Passwd,tmpvalue);
+  strcpy(pICS_REQUEST_I->password,tmpvalue);
 
   memset(tmpvalue, 0, sizeof(tmpvalue));
   getValueOfStr(send_buff,"BokSeq",tmpvalue);
@@ -220,14 +223,14 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
   memcpy(ics_send_buff+offset,ics_tia_buff,len);
   offset=offset+sizeof(ICS_DEF_TIA);
 
-  len=sizeof(ICS_DEF_488010_I_PNTA);
+  len=sizeof(ICS_DEF_REQUEST);
   for(i=0;i<len;i++)
   {
     if(ics_request_buff[i]==0)
       ics_request_buff[i]=' ';
   }
   memcpy(ics_send_buff+offset,ics_request_buff,len);
-  offset=offset+sizeof(ICS_DEF_488010_I_PNTA);
+  offset=offset+sizeof(ICS_DEF_REQUEST);
 
   /*发往ICS需加8位报文长度在头*/
   memcpy(sLen,'\0',8);
@@ -240,7 +243,7 @@ int ics_proc_488010_pnta(char *send_buff,char *recv_buff)
    /* 与ICS通讯 */
    memset(ics_port,'\0',sizeof(ics_port));
 
-   ret = get_config_value(CONFIG_FILE_NAME, "ICS_PORT_PNTA", ics_port);
+   ret = get_config_value(CONFIG_FILE_NAME, "ICS_PORT_GZH", ics_port);
 
    if (ret != RETURN_OK)
    {
@@ -265,7 +268,7 @@ RETURN:
     /* STEP3-1处理页面显示要素: 在这里填写的字段，就是在页面上显示的字段 */
     /* 注意，<br>是页面显示的换行符号 */
   
-      memcpy(pICS_RESPONSE_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_488010_N_PNTA));
+      memcpy(pICS_RESPONSE_N,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_RESPONSE_N));
   
       /* 调用setValueOf函数填充 */
       /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/
@@ -284,14 +287,6 @@ RETURN:
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
       setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
-
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_RESPONSE_N->sjcd,sizeof(pICS_RESPONSE_N->sjcd));
-      setValueOfStr(recv_buff,"sjcd",tmp_val_str);
-
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
-      memcpy(tmp_val_str,pICS_RESPONSE_N->sjgs,sizeof(pICS_RESPONSE_N->sjgs));
-      setValueOfStr(recv_buff,"sjgs",tmp_val_str);
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->ActSts,sizeof(pICS_RESPONSE_N->ActSts));
@@ -330,7 +325,7 @@ RETURN:
   else
   { /*失败*/
       /*获得错误返回包*/
-      memcpy(pICS_RESPONSE_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_DEFAULT_E));
+      memcpy(pICS_RESPONSE_E,ics_recv_buff+sizeof(ICS_DEF_TOA),sizeof(ICS_DEF_RESPONSE_E));
   
       /* 调用setValueOf函数填充 */
       /*格式:setValueOfStr(recv_buff,"display_zone",display_str);*/

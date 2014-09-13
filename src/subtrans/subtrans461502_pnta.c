@@ -107,8 +107,8 @@ int ics_proc_461502_pnta(char *send_buff,char *recv_buff)
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");            /* CICS交易代码 */
-  memcpy(pICS_TIA->TTxnCd, s_TxnCod, sizeof(pICS_TIA->TTxnCd));
-  memcpy(pICS_TIA->FeCod, s_TxnCod, sizeof(pICS_TIA->FeCod));
+  strcpy(pICS_TIA->TTxnCd, s_TxnCod);
+  strcpy(pICS_TIA->FeCod, s_TxnCod);
   strcpy(pICS_TIA->TrmNo,"DVID");
 
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/

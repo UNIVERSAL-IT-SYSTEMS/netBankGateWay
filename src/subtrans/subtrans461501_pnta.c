@@ -106,8 +106,8 @@ int ics_proc_461501_pnta(char *send_buff,char *recv_buff)
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");            /* CICS交易代码 */
-  memcpy(pICS_TIA->TTxnCd, s_TxnCod, sizeof(pICS_TIA->TTxnCd));
-  memcpy(pICS_TIA->FeCod, s_TxnCod, sizeof(pICS_TIA->FeCod));
+  strcpy(pICS_TIA->TTxnCd, s_TxnCod);
+  strcpy(pICS_TIA->FeCod, s_TxnCod);
   strcpy(pICS_TIA->TrmNo,"DVID");
 
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
@@ -273,17 +273,17 @@ RETURN:
 
       setValueOfStr(recv_buff,"MGID","000000");  /*返回码*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->TmpDat,sizeof(pICS_RESPONSE_N->TmpDat));
-      setValueOfStr(recv_buff,"TmpDat",tmp_val_str);/*包体长度*/
+      setValueOfStr(recv_buff,"TmpDat",tmp_val_str);包体长度*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->ApCode,sizeof(pICS_RESPONSE_N->ApCode));
-      setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
+      setValueOfStr(recv_buff,"ApCode",tmp_val_str);格式码'SC'*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
-      setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
+      setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);格式码'D04'*/
       
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->AdnCod,sizeof(pICS_RESPONSE_N->AdnCod));

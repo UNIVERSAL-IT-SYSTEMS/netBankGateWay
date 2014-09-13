@@ -1638,9 +1638,9 @@ typedef struct {
 }ICS_DEF_461501_I_PNTA;
 
 typedef struct {
-	   char    TmpDat[4];      /*长度       */
-     char    ApCode[2];     /*SC         */
-     char    OFmtCd[3];      /*D04        */
+     /*char    TmpDat[4];      长度       */
+     /*char    ApCode[2];     SC         */
+     /*char    OFmtCd[3];      D04        */
 	   char    AdnCod   [20];  /*通知书编号*/
      char    PBilTyp  [10];  /*打印票据种类*/
      char    PBilNo   [20];  /*打印票据编号*/
@@ -1704,7 +1704,7 @@ typedef struct {
  */   
 typedef struct {   
 		char  AdnKnd[1];			/*通知书性质 1普通单 2汇总单 3交罚单 4批量扣款*/                               				
-		char  AdnCod[20];			/*请求书编号*/                                 		
+		char  AdnCod[40];			/*请求书编号*/                                 		
 		char  RgnFlg[1]; 			/*区域标识 0区县级 1市级*/                             		
 }ICS_DEF_461503_I_PNTA;
       
@@ -1730,9 +1730,9 @@ typedef struct {
 }ICS_DEF_461509_I_PNTA;                                                     
                                                                            
 typedef struct {
-	  char  TmpDat[4];     /*package length*/
-    char  ApCode[2];     /*SC*/
-    char  OFmtCd[3];     /*D04*/
+    /*char  TmpDat[4];    package length*/
+    /*char  ApCode[2];     SC*/
+    /*char  OFmtCd[3];     D04*/
     char  AdnCod[20]    ;/*文书编号     */
     char  PBilTyp[10]   ;/*打印票据种类 */
     char  PBilNo[20]    ;/*打印票据编号 */
@@ -1765,7 +1765,7 @@ typedef struct {
     char ActNo[21]       ;      /* 账号*/
     char CcyCod[3]       ;      /* 币种*/
     char ChkPin[1]       ;      /* 验密标识*/
-    char Passwd[20]       ;      /* 密码*/
+    char password[20]       ;      /* 密码*/
     char BokSeq[5]       ;      /* 一本通帐户序号*/
     char JJCod [3]       ;      /* 卡外币JJCod*/
 }ICS_DEF_488010_I_PNTA;                                                     
@@ -1774,8 +1774,6 @@ typedef struct {
 	  char  TmpDat[4];     /*package length*/
     char  ApCode[2];     /*SC*/
     char  OFmtCd[3];     /*D04*/
-    char sjcd[4]       ;      /* 数据长度*/
-    char sjgs[5]       ;      /* 数据格式*/
     char ActSts[1]       ;      /* 账户状态*/
     char ActNam[60]       ;      /* 账户名*/
     char ActBal[15]       ;      /* 余额*/

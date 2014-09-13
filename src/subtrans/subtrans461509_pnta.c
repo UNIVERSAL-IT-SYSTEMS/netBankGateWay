@@ -56,7 +56,7 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   char      display_str[LEN_ICS_PROC_BUF];
   char      tmpvalue[300];   /*从上传报文中取得的某项值*/
 
-  char      s_TxnCod[7] = "461503";
+  char      s_TxnCod[7] = "461509";
   char			s_CDNO[LEN_CDNO]; /* 卡号 */
   char			s_PSWD[20]; /* 密码 */
 
@@ -107,9 +107,10 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
  /* 注意：填充数据最好按照结构定义先后顺序，以免出现数据覆盖问题 */
   /* STEP1-2:填上传串的固定头 */
   strcpy(pICS_TIA->CCSCod,"TLU6");            /* CICS交易代码 */
-  memcpy(pICS_TIA->TTxnCd, s_TxnCod, sizeof(pICS_TIA->TTxnCd));
-  memcpy(pICS_TIA->FeCod, s_TxnCod, sizeof(pICS_TIA->FeCod));
+  strcpy(pICS_TIA->TTxnCd, s_TxnCod);
+  strcpy(pICS_TIA->FeCod, s_TxnCod);
   strcpy(pICS_TIA->TrmNo,"DVID");
+
 
   getValueOfStr(send_buff,"TXNSRC", sTxnCnl); /*交易渠道*/
   strcpy(pICS_TIA->TxnSrc,sTxnCnl);
@@ -124,6 +125,7 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   ret = get_config_value(CONFIG_FILE_NAME, "TELLER_NO", sTellerNo);
   if (ret != RETURN_OK)
     return ret;
+
 
   strcpy(pICS_TIA->TlrId,sTellerNo);          /*柜员号*/
   strcpy(pICS_TIA->TIATyp,"T");
@@ -150,37 +152,38 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
   /* STEP1-4: 从上传报文中获得其余值-用getValueOf函数*/
  
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"AdnCod",tmpvalue);       /* 请求书编号 */
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->AdnCod,tmpvalue);
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"PBilTyp",tmpvalue);      /*打印票据种类*/    
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->PBilTyp,tmpvalue);
   
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"PBilNo",tmpvalue);       /*打印票据编号*/    
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->PBilNo,tmpvalue);
   
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"HndFlg",tmpvalue);       /*手工票标志*/    
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->HndFlg,tmpvalue);
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"UpdAdnFg",tmpvalue);     /*0正常获取应收信息 1更新已存应收信息*/    
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->UpdAdnFg,tmpvalue);
   
-  memset(tmpvalue, 0, sizeof(tmpvalue));
+  memset(tmpvalue, '\0', sizeof(tmpvalue));
   getValueOfStr(send_buff,"RipFlg",tmpvalue);       /*撕定额票标志 0否 1是*/  
   trim(tmpvalue);
   strcpy(pICS_REQUEST_I->RipFlg,tmpvalue);
+
 
   /*STEP1-4:把结构中的结束符替换为空格，上传串末尾加结束符.*/
   len=sizeof(ICS_DEF_TIA);
@@ -247,6 +250,7 @@ int ics_proc_461509_pnta(char *send_buff,char *recv_buff)
        return -2;
    }
    /*-- 打印发送报文与端口 --*/
+   flog( STEP_LEVEL,"--发送ics报文--");
    flog( STEP_LEVEL,"--发送ics报文--[%s][%s]",ics_send_buff,ics_port);
    /*-- 发送交易到ICS，并接受返回 --*/
    ret=clientics( ics_send_buff,ics_recv_buff, atoi(ics_port) );
@@ -273,17 +277,17 @@ RETURN:
 
       setValueOfStr(recv_buff,"MGID","000000");  /*返回码*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->TmpDat,sizeof(pICS_RESPONSE_N->TmpDat));
-      setValueOfStr(recv_buff,"TmpDat",tmp_val_str);/*包体长度*/
+      setValueOfStr(recv_buff,"TmpDat",tmp_val_str);包体长度*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->ApCode,sizeof(pICS_RESPONSE_N->ApCode));
-      setValueOfStr(recv_buff,"ApCode",tmp_val_str);/*格式码'SC'*/
+      setValueOfStr(recv_buff,"ApCode",tmp_val_str);格式码'SC'*/
 
-      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      /*memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
-      setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
+      setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);格式码'D04'*/
 
       memset(tmp_val_str,'\0',sizeof(tmp_val_str));
       memcpy(tmp_val_str,pICS_RESPONSE_N->AdnCod,sizeof(pICS_RESPONSE_N->AdnCod));
