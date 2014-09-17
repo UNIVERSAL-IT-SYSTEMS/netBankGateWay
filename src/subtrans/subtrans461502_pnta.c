@@ -311,6 +311,10 @@ RETURN:
       memcpy(tmp_val_str,pICS_RESPONSE_N->OFmtCd,sizeof(pICS_RESPONSE_N->OFmtCd));
       setValueOfStr(recv_buff,"OFmtCd",tmp_val_str);/*格式码'D04'*/
 
+      memset(tmp_val_str,'\0',sizeof(tmp_val_str));
+      memcpy(tmp_val_str,pICS_TOA->TckNo,sizeof(pICS_TOA->TckNo));
+      setValueOfStr(recv_buff,"TckNo",tmp_val_str);  /*返回码*/ 
+
       /* STEP3-2 处理页面隐含要素: 这里填写的字段，就是在页面作为隐含input的要素 */
       /* 注意，1.这里设置参数的顺序必须和数据库中参数的顺序一致，否则回出错！ 
                2.返回码字段名定义注意与WEB上一致*/ 
